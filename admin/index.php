@@ -11,7 +11,7 @@
                     <div class="col-lg-12">
                         <h1 class="page-header">
                             Dashboard
-                            <small>Welcome: Author Name</small>
+                            <small>Welcome: <?php echo $_SESSION['user_firstname'] ?></small>
                         </h1>
                         <ol class="breadcrumb">
                             <li>

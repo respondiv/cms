@@ -557,8 +557,8 @@
 
     // Display Login Form
     function displayLoginForm(){
-                    /**/echo "<form role='form' action='includes/login.php' method='post' data-toggle='validator' >";
-                    echo "<form role='form' action='' method='post' data-toggle='validator' >";
+                    echo "<form role='form' action='includes/login.php' method='post' data-toggle='validator' >";
+                    // echo "<form role='form' action='' method='post' data-toggle='validator' >";
                             echo "<div class='form-group'>";
                                 echo "<input type='text' class='form-control' name='username' required data-error='Username is Required' placeholder='Enter Username'>";
                                 echo "<div class='help-block with-errors'></div>";
@@ -577,18 +577,7 @@
     }
 
 
-    // Login Function
-    function loginUser(){
-        global $connection;
-        if (isset($_POST['login_submit'])) {
-             $username = $_POST['username'];
-             $password = $_POST['password'];
-         } 
-         
 
-
-
-    }
 
 
 
