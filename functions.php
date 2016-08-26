@@ -127,7 +127,7 @@
                 return $rows;
             }
 
-	    	$query = "SELECT * FROM posts WHERE post_tags LIKE '%$search%' or post_title LIKE '%$search%' or post_content LIKE '%$search%'";
+	    	$query = "SELECT * FROM posts WHERE (post_tags LIKE '%$search%' or post_title LIKE '%$search%' or post_content LIKE '%$search%') AND post_status = 'published' ";
 	        $search_results = mysqli_query($connection,$query);
 
 	        querryCheck($search_results);
@@ -402,7 +402,7 @@
         if (isset($_GET['category'])) {
             $cat_id = $_GET['category'];
        
-            $query = "SELECT * FROM posts WHERE post_category_id = $cat_id ";
+            $query = "SELECT * FROM posts WHERE post_category_id = $cat_id AND post_status = 'published' ";
             $query_post_in_category = mysqli_query($connection,$query);
 
             querryCheck($query_post_in_category);
