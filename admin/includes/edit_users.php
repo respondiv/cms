@@ -21,7 +21,7 @@
 
 						<h3 class="page-header">
                             Edit Users:
-                            <small> Here you can Edit your User Information</small>
+                            <small> Here you can Edit User Information</small>
                         </h3>
 
 						<!-- Form to Edit Users -->

@@ -2,6 +2,7 @@
 <?php include "../includes/db.php"             /* Include db.php */ ?> 
 <?php session_start();          /* Start the Sesson */?>  
 <?php include "functions.php"                /* Include Functions */ ?> 
+<?php userAdminAccess(); ?>
 <!DOCTYPE html>
 <html lang="en">
 

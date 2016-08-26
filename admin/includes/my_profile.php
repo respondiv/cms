@@ -20,8 +20,8 @@
 					    ?>
 
 						<h3 class="page-header">
-                            Edit Users:
-                            <small> Here you can Edit your User Information</small>
+                            Howdy <?php echo $_SESSION['user_firstname']; ?>! 
+                            <small> Here you can Edit your Profile Information</small>
                         </h3>
 
 						<!-- Form to Edit Users -->

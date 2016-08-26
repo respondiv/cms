@@ -31,7 +31,7 @@
 
          }
 
-         if ($username !== $db_username || $password !== $db_password ) {
+         if ($username !== $db_username || $password !== $db_password || $db_status !== "approved" || $db_user_role !== "admin") {
              header("Location: /");
          }
         /* elseif ($username == $db_username && $password == $db_password) {
@@ -40,6 +40,7 @@
          else{
          	$_SESSION['user_id'] = $db_id;
          	$_SESSION['username'] = $db_username;
+            $_SESSION['user_password'] = $db_password;
          	$_SESSION['user_firstname'] = $db_firstname;
          	$_SESSION['user_lastname'] = $db_lastname;
          	$_SESSION['user_email'] = $db_email;

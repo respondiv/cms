@@ -818,8 +818,14 @@
     // Edit users: Step 1 - Display the existing users inside the input fields
     function editUsersStep1(){
         global $connection;
-        if (isset($_GET['user_id'])) {
-            $user_id_update = $_GET['user_id'];
+        if (isset($_GET['user_id']) || isset($_SESSION)) {
+            if (empty($_GET['user_id'])) {
+               $user_id_update = $_SESSION['user_id'];
+            }
+            else{
+                $user_id_update = $_GET['user_id'];
+            }
+
             $query = "SELECT * FROM users WHERE user_id = $user_id_update ";
             $edit_user = mysqli_query($connection, $query);
 
@@ -887,7 +893,12 @@
             // Check if the query is good
             querryCheck($update_user);
 
-            header("Location: users.php?source=edit_users&user_id={$user_id}");
+            if ($user_id == $_SESSION['user_id']) {
+                header("Location: users.php?source=my_profile");
+            }
+            else{
+                header("Location: users.php?source=edit_users&user_id={$user_id}");
+            }
         }
     }
 
@@ -957,11 +968,37 @@
             case 'edit_users':
                 include "includes/edit_users.php";      // Include edit_users
                 break;
+
+                case 'my_profile':
+                include "includes/my_profile.php";      // Include edit_users
+                break;
             
             default:
                 include "includes/view_all_users.php";      // Include view_all_users by default
                 break;
         }
+    }
+
+
+    // Prevent users from accessing admin unless they are admin and status approved.
+    function userAdminAccess(){
+        if (isset($_SESSION)) {
+            $user_id = $_SESSION['user_id'];
+            $user_username = $_SESSION['username'];
+            $user_firstname = $_SESSION['user_firstname'];
+            $user_lastname = $_SESSION['user_lastname'];
+            $user_email = $_SESSION['user_email'];
+            $user_role = $_SESSION['user_role'];
+            $user_status = $_SESSION['db_status'];
+            $user_image = $_SESSION['user_image'];
+
+            if ($user_status !== "approved" || $user_role !== "admin") {
+                header("Location: ../");
+            }
+        }
+        else{
+            header("Location: ../");
+         } 
     }
 
 

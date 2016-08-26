@@ -30,9 +30,9 @@
                             <li>
                                 <a href="users.php?source=add_users"><i class="fa fa-fw fa-pencil"></i> Add New User</a>
                             </li>
-                            <li>
-                                <a href="posts.php?source=my_profile"><i class="fa fa-fw fa-user"></i> My Proflie</a>
-                            </li>
+                           <!--  <li>
+                               <a href="users.php?source=my_profile"><i class="fa fa-fw fa-user"></i> My Proflie</a>
+                           </li> -->
                         </ul>
                     </li>                
                 </ul>

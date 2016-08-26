@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Aug 25, 2016 at 02:01 AM
+-- Generation Time: Aug 26, 2016 at 03:02 AM
 -- Server version: 5.7.13-log
 -- PHP Version: 7.0.9
 
@@ -130,11 +130,11 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `username`, `password`, `user_firstname`, `user_lastname`, `user_email`, `user_image`, `user_role`, `user_status`, `user_randSalt`) VALUES
-(1, 'cms', 'cms1234', 'CMS', 'Guy', 'cmsguy@gmail.com', 'cms_guy.png', 'admin', 'approved', ''),
-(2, 'cmsuser', 'cmsuser1234', 'User', 'CMS', 'user@cms.ca', 'user_cms.png', 'subscriber', 'declined', ''),
-(5, 'user', 'user1234', 'Bruce', 'Wayne', 'bruce@wayne.ca', 'user_cms.png', 'subscriber', 'approved', '0'),
+(1, 'cms', 'cms1234', 'Mary', 'Jane', 'cmsguy@gmail.com', 'cms_guy.png', 'subscriber', 'approved', ''),
+(2, 'cmsuser', 'cmsuser1234', 'User', 'CMS', 'user@cms.ca', 'user_cms.png', 'subscriber', 'approved', ''),
+(5, 'user', 'user1234', 'Bruce', 'Wayne', 'bruce@wayne.ca', 'user_cms.png', 'admin', 'approved', '0'),
 (7, 'superadmin', 'superadmin1234', 'Super', 'Admin', 'super@admin.ca', 'user_female.png', 'admin', 'declined', '0'),
-(8, 'one', 'two', 'three', 'four', 'five@six.com', 'cms_guy.png', 'subscriber', 'approved', '0');
+(8, 'one', 'two', 'three', 'four', 'five@six.com', 'new_user.png', 'admin', 'approved', '0');
 
 --
 -- Indexes for dumped tables
