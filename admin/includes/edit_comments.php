@@ -12,6 +12,14 @@
 						  	// Update the existing comment with the new values using editCommentsStep2() functions
 						  	editCommentsStep2();
 
+						  	if (isset($_GET['commentsEdited'])){
+                                echo "<div class='alert alert-success'>";
+                                echo "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>";
+                                echo "Comment Updated Successfully";
+                                echo "</div>";
+                            }
+
+
 
 					    ?>
 
@@ -21,6 +29,12 @@
                         </h3>
 						<!-- Form to Edit comments -->
 
+						<div class="row">
+							<div class="bottom1">
+								<a href='comments.php' class="btn btn-sm btn-info"> Edit More Comments</a>
+							</div>
+						</div>
+						<div class="row">
 						<div class="well">
 		                    <form role="form" action="" method="post" data-toggle="validator">
 		                        <div class="form-group">
@@ -52,4 +66,5 @@
 		                        								</div> -->
 		                        <button type="submit" class="btn btn-primary" name="update_comment">Update</button>
 		                    </form>
+	              	  </div>
 	              	  </div>

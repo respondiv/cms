@@ -16,7 +16,36 @@
 
                         <!-- Add / Update Category Form  -->
                         <div class="col-sm-6 bottom10-m">
-                            <?php addCategories(); // Add Categories ?>
+                            <?php addCategories(); // Add Categories 
+                            
+                            if (isset($_GET['addCategorySuccess'])){
+                                echo "<div class='alert alert-success'>";
+                                echo "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>";
+                                echo "Category Added Successfully";
+                                echo "</div>";
+                            }
+                            if (isset($_GET['updateCategorySuccess'])){
+                                echo "<div class='alert alert-success'>";
+                                echo "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>";
+                                echo "Category Updated Successfully";
+                                echo "</div>";
+                            }
+                            if (isset($_GET['emptyCategoryName'])){
+                                echo "<div class='alert alert-danger'>";
+                                echo "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>";
+                                echo "Please Enter Category Name";
+                                echo "</div>";
+                            }
+                            if (isset($_GET['deleteCategorySuccess'])){
+                                echo "<div class='alert alert-success'>";
+                                echo "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>";
+                                echo "Category Successfully Deleted";
+                                echo "</div>";
+                            }
+
+                            ?>
+
+
 
                             <!-- Add Category Form -->
                             <h3>Add a Category</h3>

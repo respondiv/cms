@@ -19,15 +19,7 @@
     -->
 
     <script src="includes/tinymce/tinymce.min.js"></script>
-    <script>
-    tinymce.init({ 
-        selector:'textarea',
-        plugins: "code",
-        // menubar: false
-        menubar: 'edit format tools'
-    });
-    </script>
-
+    <script src="js/myscripts.js"></script>
 
 </body>
 

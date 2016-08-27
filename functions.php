@@ -101,7 +101,7 @@
                         echo "</p>";
                         echo "<p><span class='glyphicon glyphicon-time'></span> Posted on {$value['post_date']} | <span class='glyphicon glyphicon-briefcase'></span> Posted in {$value['post_category_name']} | <span class='glyphicon glyphicon-comment'></span> {$value['post_comment_count']} </p>";
                         echo "<hr>";
-                        echo "<img class='img-responsive' src='images/{$value['post_image']}'>";
+                        echo "<a href='post.php?p_id={$value['post_id']}'><img class='img-responsive' src='images/{$value['post_image']}'></a>";
                         echo "<hr>";
                         echo "<p>{$value['post_content']} .....</p>";
                         echo "<a class='btn btn-primary' href='post.php?p_id={$value['post_id']}''>Read More <span class='glyphicon glyphicon-chevron-right'></span></a>";
@@ -186,7 +186,7 @@
 	                    echo "</p>";
 	                    echo "<p><span class='glyphicon glyphicon-time'></span> Posted on {$value['post_date']} | <span class='glyphicon glyphicon-briefcase'></span> Posted in {$value['post_category_name']} | <span class='glyphicon glyphicon-comment'></span> {$value['post_comment_count']} </p>";
 	                    echo "<hr>";
-	                    echo "<img class='img-responsive' src='images/{$value['post_image']}'>";
+	                    echo "<a href='post.php?p_id={$value['post_id']}'><img class='img-responsive' src='images/{$value['post_image']}'></a>";
 	                    echo "<hr>";
 	                    echo "<p>{$value['post_content']} .....</p>";
 	                    echo "<a class='btn btn-primary' href='post.php?p_id={$value['post_id']}''>Read More <span class='glyphicon glyphicon-chevron-right'></span></a>";
@@ -472,7 +472,7 @@
                         echo "</p>";
                         echo "<p><span class='glyphicon glyphicon-time'></span> Posted on {$value['post_date']} | <span class='glyphicon glyphicon-briefcase'></span> Posted in {$value['post_category_name']} | <span class='glyphicon glyphicon-comment'></span> {$value['post_comment_count']} </p>";
                         echo "<hr>";
-                        echo "<img class='img-responsive' src='images/{$value['post_image']}'>";
+                        echo "<a href='post.php?p_id={$value['post_id']}'><img class='img-responsive' src='images/{$value['post_image']}'></a>";
                         echo "<hr>";
                         echo "<p>{$value['post_content']} .....</p>";
                         echo "<a class='btn btn-primary' href='post.php?p_id={$value['post_id']}''>Read More <span class='glyphicon glyphicon-chevron-right'></span></a>";

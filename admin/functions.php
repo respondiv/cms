@@ -7,10 +7,7 @@
             $cat_title = $_POST['cat_title'];
 
             if ($cat_title =="" || empty($cat_title)) {
-                echo "<div class='alert alert-danger'>";
-                echo "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>";
-                echo "Please Enter Category Name";
-                echo "</div>";
+                header("Location: categories.php?emptyCategoryName=true");
             }
             else{
                 $query = "INSERT INTO categories(cat_title) ";
@@ -20,6 +17,8 @@
             
                 // Check if the query is good
                 querryCheck($create_category);
+
+                header("Location: categories.php?addCategorySuccess=true");
             }
         }
 	}
@@ -54,7 +53,7 @@
 		    $update_category = mysqli_query($connection, $query);
 		    // Check if the query is good
             querryCheck($update_category);
-            header("Location: categories.php");
+            header("Location: categories.php?updateCategorySuccess=true");
 		}
 	}
 
@@ -93,7 +92,7 @@
             $detele_category = mysqli_query($connection, $query);
             // Check if the query is good
             querryCheck($detele_category);
-            header("Location: categories.php");
+            header("Location: categories.php?deleteCategorySuccess=true");
         }
 	}
 
@@ -162,12 +161,13 @@
             $new_array = arraySort($new_array, 'post_date', SORT_DESC);
             foreach ($new_array as $key => $value) {
                 echo "<tr>";
+                echo "<td class='hide-m'> <input class='checkBoxes' type='checkbox' name='checkBoxArray[]' value='{$value['post_id']}'> </td>";
                 echo "<td class='hide-m'>{$value['post_id']}</td>";
                 echo "<td><a href='../post.php?p_id={$value['post_id']}' target='_blank'>{$value['post_title']}</a></td>";
                 echo "<td>{$value['post_author']}</td>";
                 echo "<td class='hide-m'>{$value['post_category_name']}</td>";
                 echo "<td class='hide-m'><img src='../images/{$value['post_image']}' width='90em'></td>";
-                echo "<td class='hide-m'>{$value['post_content']}...</td>";
+                // echo "<td class='hide-m'>{$value['post_content']}...</td>";
                 echo "<td class='hide-m'>{$value['post_tags']}</td>";
                 echo "<td class='hide-m'>{$value['post_date']}</td>";
                 echo "<td>{$value['post_status']}</td>";
@@ -215,7 +215,7 @@
 
            $post_id = mysqli_insert_id($connection);
 
-           header("Location: posts.php?source=edit_post&post_id={$post_id}");
+           header("Location: posts.php?source=edit_post&post_id={$post_id}&postAddResult=true");
 
         }
     }
@@ -230,7 +230,7 @@
             $delete_selected_post = mysqli_query($connection,$query);
             // Check if the query is good
            querryCheck($delete_selected_post);
-           header("Location: posts.php");
+           header("Location: posts.php?postDeleteResult=true");
 
         }
     }
@@ -248,6 +248,12 @@
 
             // Check if the query is good
             querryCheck($edit_post_by_id);
+
+            // To Display Update Successfull Message
+            $updateResult = "false";
+            if (isset($_POST['update_post'])) {
+                $updateResult = "true";
+            }
 
             while($row = mysqli_fetch_assoc($edit_post_by_id)){
                 $post_id = $row['post_id'];
@@ -320,7 +326,9 @@
             // Check if the query is good
             querryCheck($update_post);
 
-            header("Location: posts.php?source=edit_post&post_id={$post_id}");
+            header("Location: posts.php?source=edit_post&post_id={$post_id}&updateResult=true");
+
+
         }
     }
     
@@ -518,6 +526,7 @@
             $new_array = arraySort($new_array, 'comment_id', SORT_DESC);
             foreach ($new_array as $key => $value) {
                 echo "<tr>";
+                echo "<td class='hide-m'> <input class='checkBoxes' type='checkbox' name='checkBoxArray[]' value='{$value['comment_id']}'> </td>";
                 echo "<td class='hide-m'>{$value['comment_id']}</td>";
                 echo "<td><a href='../post.php?p_id={$value['comment_post_id']}' target='_blank'>{$value['comment_post_title']}</a></td>";
                 echo "<td>{$value['comment_content']}</td>";
@@ -567,7 +576,7 @@
             // Check if the query is good
             querryCheck($detele_comment);
 
-            header("Location: comments.php");
+            header("Location: comments.php?commentsDelete=true");
         }
     }
 
@@ -621,7 +630,7 @@
             querryCheck($update_comment);
 
 
-            header("Location: comments.php?source=edit_comment&comment_id={$comment_id}");
+            header("Location: comments.php?source=edit_comment&comment_id={$comment_id}&commentsEdited=true");
         }
     }
 
@@ -649,7 +658,7 @@
            // Check if the query is good
            querryCheck($update_post_comment_count);
 
-            header("Location: comments.php");
+            header("Location: comments.php?commentsDecline=ture");
         }
 
         // Approve Selected Comments
@@ -671,7 +680,7 @@
            // Check if the query is good
            querryCheck($update_post_comment_count);
 
-            header("Location: comments.php");
+            header("Location: comments.php?commentsApproved=true");
         }
 
     }
@@ -755,6 +764,7 @@
             $new_array = arraySort($new_array, 'user_firstname', SORT_ASC);
             foreach ($new_array as $key => $value) {
                 echo "<tr>";
+                echo "<td class='hide-m'> <input class='checkBoxes' type='checkbox' name='checkBoxArray[]' value='{$value['user_id']}'> </td>";
                 echo "<td class='hide-m'>{$value['user_id']}</td>";
                 echo "<td>{$value['username']}</td>";
                 echo "<td class='hide-m'>{$value['user_firstname']}</td>";
@@ -810,7 +820,7 @@
 
            $user_id = mysqli_insert_id($connection);
 
-           header("Location: users.php?source=edit_users&user_id={$user_id}");
+           header("Location: users.php?source=edit_users&user_id={$user_id}&userAddResult=true");
 
         }
     }
@@ -894,10 +904,10 @@
             querryCheck($update_user);
 
             if ($user_id == $_SESSION['user_id']) {
-                header("Location: users.php?source=my_profile");
+                header("Location: users.php?source=my_profile&userEditResult=true");
             }
             else{
-                header("Location: users.php?source=edit_users&user_id={$user_id}");
+                header("Location: users.php?source=edit_users&user_id={$user_id}&userEditResult=true");
             }
         }
     }
@@ -911,7 +921,7 @@
             $delete_selected_user = mysqli_query($connection,$query);
             // Check if the query is good
            querryCheck($delete_selected_user);
-           header("Location: users.php");
+           header("Location: users.php?userDeleteResult=true");
 
         }
     }
@@ -929,7 +939,7 @@
             // Check if the query is good
             querryCheck($decline_user);
 
-            header("Location: users.php");
+            header("Location: users.php?userDeclinedResult=true");
         }
 
         // Approve Selected users
@@ -941,7 +951,7 @@
             // Check if the query is good
             querryCheck($approve_user);
 
-            header("Location: users.php");
+            header("Location: users.php?userApprovedResult=true");
         }
 
     }
@@ -1068,6 +1078,202 @@
 
         $total_count = mysqli_num_rows($select_all_values);
         return $total_count;
+    }
+
+
+    //  Bulk Update Posts with message.
+    function allPostsCheckBoxes(){
+        global $connection;
+        if (isset($_POST['checkBoxArray'])) {
+            $i=0;
+            foreach ($_POST['checkBoxArray'] as $postIdFromCheckbox) {
+                
+                $bulk_options = $_POST['bulk_options'];
+
+                switch ($bulk_options) {
+                    case 'published':
+                        $query = "UPDATE posts SET post_status = '{$bulk_options}' WHERE post_id = {$postIdFromCheckbox} ";
+                        $updatePost = mysqli_query($connection, $query);
+                        querryCheck($updatePost);
+                        if ($i==0) {
+                            echo "<div class='alert alert-success'>";
+                                echo "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>";
+                                echo "Posts Status Changed to Published";
+                            echo "</div>";
+                        }
+                        
+                        break;
+
+                    case 'draft':
+                        $query = "UPDATE posts SET post_status = '{$bulk_options}' WHERE post_id = {$postIdFromCheckbox} ";
+                        $updatePost = mysqli_query($connection, $query);
+                        querryCheck($updatePost);
+                        if ($i==0) {
+                            echo "<div class='alert alert-success'>";
+                                echo "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>";
+                                echo "Posts Status Changed to Draft";
+                            echo "</div>";
+                        }
+                        
+                        break;
+
+                    case 'delete':
+                        $query = "DELETE FROM posts WHERE post_id = {$postIdFromCheckbox} ";
+                        $updatePost = mysqli_query($connection, $query);
+                        querryCheck($updatePost);
+                        if ($i==0) {
+                            echo "<div class='alert alert-success'>";
+                                echo "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>";
+                                echo "Posts Successfully Deleted";
+                            echo "</div>";
+                        }
+                        break;
+
+                    default:
+                        if ($i==0) {
+                            echo "<div class='alert alert-warning'>";
+                                echo "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>";
+                                echo "Please Select the Options";
+                            echo "</div>";
+                        }
+                        break;
+                }
+
+                $i++;
+            }
+
+        }
+        
+    }
+
+     //  Bulk Update Comments with message.
+    function allCommentsCheckBoxes(){
+        global $connection;
+        if (isset($_POST['checkBoxArray'])) {
+            $i=0;
+            foreach ($_POST['checkBoxArray'] as $commentIdFromCheckbox) {
+                
+                $bulk_options = $_POST['bulk_options'];
+
+                switch ($bulk_options) {
+                    case 'approved':
+                        $query = "UPDATE comments SET comment_status = '{$bulk_options}' WHERE comment_id = {$commentIdFromCheckbox} ";
+                        $updateComment = mysqli_query($connection, $query);
+                        querryCheck($updateComment);
+                        if ($i==0) {
+                            echo "<div class='alert alert-success'>";
+                                echo "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>";
+                                echo "Comment(s) Approved";
+                            echo "</div>";
+                        }
+                        
+                        break;
+
+                    case 'decline':
+                        $query = "UPDATE comments SET comment_status = '{$bulk_options}' WHERE comment_id = {$commentIdFromCheckbox} ";
+                        $updateComment = mysqli_query($connection, $query);
+                        querryCheck($updateComment);
+                        if ($i==0) {
+                            echo "<div class='alert alert-success'>";
+                                echo "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>";
+                                echo "Comment(s) Declined";
+                            echo "</div>";
+                        }
+                        
+                        break;
+
+                    case 'delete':
+                        $query = "DELETE FROM comments WHERE comment_id = {$commentIdFromCheckbox} ";
+                        $updateComment = mysqli_query($connection, $query);
+                        querryCheck($updateComment);
+                        if ($i==0) {
+                            echo "<div class='alert alert-success'>";
+                                echo "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>";
+                                echo "Comment(s) Deleted";
+                            echo "</div>";
+                        }
+                        break;
+
+                    default:
+                        if ($i==0) {
+                            echo "<div class='alert alert-warning'>";
+                                echo "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>";
+                                echo "Please Select the Options";
+                            echo "</div>";
+                        }
+                        break;
+                }
+
+                $i++;
+            }
+
+        }
+        
+    }
+
+     //  Bulk Update Users with message.
+    function allUsersCheckBoxes(){
+        global $connection;
+        if (isset($_POST['checkBoxArray'])) {
+            $i=0;
+            foreach ($_POST['checkBoxArray'] as $userIdFromCheckbox) {
+                
+                $bulk_options = $_POST['bulk_options'];
+
+                switch ($bulk_options) {
+                    case 'approved':
+                        $query = "UPDATE users SET user_status = '{$bulk_options}' WHERE user_id = {$userIdFromCheckbox} ";
+                        $updateUser = mysqli_query($connection, $query);
+                        querryCheck($updateUser);
+                        if ($i==0) {
+                            echo "<div class='alert alert-success'>";
+                                echo "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>";
+                                echo "User(s) Approved";
+                            echo "</div>";
+                        }
+                        
+                        break;
+
+                    case 'declined':
+                        $query = "UPDATE users SET user_status = '{$bulk_options}' WHERE user_id = {$userIdFromCheckbox} ";
+                        $updateUser = mysqli_query($connection, $query);
+                        querryCheck($updateUser);
+                        if ($i==0) {
+                            echo "<div class='alert alert-success'>";
+                                echo "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>";
+                                echo "User(s) Declined";
+                            echo "</div>";
+                        }
+                        
+                        break;
+
+                    case 'delete':
+                        $query = "DELETE FROM users WHERE user_id = {$userIdFromCheckbox} ";
+                        $updateUser = mysqli_query($connection, $query);
+                        querryCheck($updateUser);
+                        if ($i==0) {
+                            echo "<div class='alert alert-success'>";
+                                echo "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>";
+                                echo "User(s) Deleted";
+                            echo "</div>";
+                        }
+                        break;
+
+                    default:
+                        if ($i==0) {
+                            echo "<div class='alert alert-warning'>";
+                                echo "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>";
+                                echo "Please Select the Options";
+                            echo "</div>";
+                        }
+                        break;
+                }
+
+                $i++;
+            }
+
+        }
+        
     }
 
 ?>

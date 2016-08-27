@@ -24,10 +24,27 @@
                         <a href="#">Contact</a>
                     </li> -->
 
-                    <?php navCategoryDisplay();     // Display Nav Category Alphabetically ?>
-                   <li>
-                        <a href="admin/">Admin</a>
-                    </li>
+                    <?php // navCategoryDisplay();     // Display Nav Category Alphabetically ?>
+                    
+                    <?php
+                        if(isset($_SESSION['user_role'])) {
+                            // if ($_SESSION['user_role'] == "admin") {
+                                if (isset($_GET['p_id'])) {
+                                    $post_id = $_GET['p_id'];
+                                    echo "<li>";
+                                        echo "<a href='admin/posts.php?source=edit_post&post_id={$post_id}'>Edit Post</a>";
+                                    echo "</li>";
+                                }
+                                echo "<li>";
+                                    echo "<a href='admin/'>Admin</a>";
+                                echo "</li>";
+                            // }   
+                        }
+
+
+                    ?>
+
+
 
 
                 </ul>

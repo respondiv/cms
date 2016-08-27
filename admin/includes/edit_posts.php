@@ -16,6 +16,19 @@
 						  	// Update the existing post with the new values using editPostsStep2() functions
 						  	editPostsStep2();
 
+					        if (isset($_GET['updateResult'])){
+				        	  	echo "<div class='alert alert-success'>";
+					            echo "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>";
+					            echo "Post Updated Successfully";
+					            echo "</div>";
+					        }
+					        if (isset($_GET['postAddResult'])){
+				        	  	echo "<div class='alert alert-success'>";
+					            echo "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>";
+					            echo "Post Added Successfully";
+					            echo "</div>";
+					        }
+					        
 
 					    ?>
 
@@ -37,17 +50,23 @@
 									<option value="draft">Draft</option>
 									<?php } ?>
 								</select>
+								<span style="margin-left:2em;">
+									<a href='../post.php?p_id=<?php echo $post_id?>' target='_blank' class="btn btn-xs btn-info"> View Post</a>
+								</span>
+								<span style="margin-left:2em;">
+									<a href='posts.php' class="btn btn-xs btn-info"> Edit More Posts</a>
+								</span>
 							</div>
 
 							<div class="form-group">
 								<label for="post_title">Post Title</label>
-								<input type="text" class="form-control" name="post_title" value="<?php echo $post_title; ?>" required>
+								<input type="text" class="form-control" name="post_title" value="<?php echo $post_title; ?>">
 								<div class="help-block with-errors"></div>
 							</div>
 
 							<div class="form-group">
 								<label for="post_content">Post Content</label>
-								<textarea class="form-control" name="post_content" id="" cols="30" rows="10" required><?php echo $post_content; ?>
+								<textarea class="form-control" name="post_content" id="" cols="30" rows="10"><?php echo $post_content; ?>
 								</textarea>
 								<div class="help-block with-errors"></div>
 							</div>

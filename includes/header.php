@@ -1,4 +1,5 @@
 <?php ob_start();?>
+<?php session_start();          /* Start the Sesson */?>  
 <?php include "db.php"                /* Include DB */ ?>
 <?php include "functions.php"                /* Include functions.php */ ?>  
 
@@ -13,7 +14,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Blog Home - Start Bootstrap Template</title>
+    <title>Blog Home - My Custom CMS</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">

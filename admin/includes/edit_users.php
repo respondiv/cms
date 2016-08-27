@@ -16,6 +16,18 @@
 						  	// Update the existing post with the new values using editUsersStep2() functions
 						  	editUsersStep2();
 
+						  	if (isset($_GET['userEditResult'])){
+				        	  	echo "<div class='alert alert-success'>";
+					            echo "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>";
+					            echo "User Updated Successfully";
+					            echo "</div>";
+					        }
+					        if (isset($_GET['userAddResult'])){
+				        	  	echo "<div class='alert alert-success'>";
+					            echo "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>";
+					            echo "User Added Successfully";
+					            echo "</div>";
+					        }
 
 					    ?>
 
@@ -39,6 +51,9 @@
 									<option value="declined" selected>Decline</option>
 									<?php } ?>
 								</select>
+								<span style="margin-left:2em;">
+									<a href='users.php' class="btn btn-xs btn-info"> Edit More Users</a>
+								</span>
 							</div>
 
 							<div class="form-group">

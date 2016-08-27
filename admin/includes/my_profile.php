@@ -16,6 +16,12 @@
 						  	// Update the existing post with the new values using editUsersStep2() functions
 						  	editUsersStep2();
 
+						  	if (isset($_GET['userEditResult'])){
+				        	  	echo "<div class='alert alert-success'>";
+					            echo "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>";
+					            echo "Profile Successfully Updated";
+					            echo "</div>";
+					        }
 
 					    ?>
 

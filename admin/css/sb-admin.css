@@ -223,17 +223,29 @@ ul.alert-dropdown {
     color: #df8a13;
 }
 
+.top1 { margin-top:1%; }
+.top2 { margin-top:2%; }
 .top3 { margin-top:3%; }
 .top5 { margin-top:5%; }
 .top10 { margin-top:10%; }
-.bottom { margin-top:5%; }
+.bottom1 { margin-bottom:1%; }
+.bottom2 { margin-bottom:2%; }
+.bottom3 { margin-bottom:3%; }
+.bottom5 { margin-bottom:5%; }
 .bottom10 { margin-bottom:10%; }
 
+#bulkOptionsContainer{padding-left: 0px;}
+
 @media(max-width:768px) {
+    .top1-m { margin-top:1%; }
+    .top2-m { margin-top:2%; }
     .top3-m { margin-top:3%; }
     .top5-m { margin-top:5%; }
     .top10-m { margin-top:10%; }
-    .bottom-m { margin-top:5%; }
+    .bottom1-m { margin-bottom:1%; }
+    .bottom2-m { margin-bottom:2%; }
+    .bottom3-m { margin-bottom:3%; }
+    .bottom5-m { margin-bottom:5%; }
     .bottom10-m { margin-bottom:10%; }
 
 }
