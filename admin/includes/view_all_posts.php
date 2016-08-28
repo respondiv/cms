@@ -25,6 +25,7 @@
                                         <option value="" selected>Select Options</option>
                                         <option value="published" >Publish</option>
                                         <option value="draft" >Draft</option>
+                                        <option value="copy" >Duplicate</option>
                                         <option value="delete" >Delete</option>
                                     </select>
                                 </div>

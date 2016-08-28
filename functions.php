@@ -573,6 +573,9 @@
                                 echo "</div>";
                                 echo "<div class='help-block with-errors'></div>";
                             echo "</div>";
+                            echo "<div class='form-group text-right'>";
+                                echo "<a href='/registration.php'>Register</a>";
+                            echo "</div>";                            
                     echo "</form> ";
     }
 

@@ -1111,11 +1111,44 @@
                         if ($i==0) {
                             echo "<div class='alert alert-success'>";
                                 echo "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>";
-                                echo "Posts Status Changed to Draft";
+                                echo "Post(s) Status Changed to Draft";
                             echo "</div>";
                         }
                         
                         break;
+
+                    case 'copy':
+                        $querySelect = "SELECT * FROM posts WHERE post_id = {$postIdFromCheckbox} ";
+                        $selectPost = mysqli_query($connection, $querySelect);
+                        querryCheck($selectPost);
+                        while($row = mysqli_fetch_assoc($selectPost)){
+                            $post_id = $row['post_id']; 
+                            $post_category_id = $row['post_category_id']; 
+                            $post_title = $row['post_title']; 
+                            $post_author = $row['post_author']; 
+                            // $post_date = $row['post_date']; 
+                            $post_date = date('d-m-y');  
+                            $post_image = $row['post_image']; 
+                            $post_content = $row['post_content']; 
+                            $post_tags = $row['post_tags'];
+                            $post_status = $row['post_status'];
+                            $post_comment_count = $row['post_comment_count'];
+
+                            $query = "INSERT INTO posts(post_category_id, post_title, post_author, post_date, post_image, post_content, post_tags, post_status, post_comment_count) ";
+                            $query .= "VALUES({$post_category_id}, '{$post_title}', '{$post_author}', now(), '{$post_image}', '{$post_content}', '{$post_tags}', '{$post_status}', {$post_comment_count}) ";
+                            // $query .= "VALUES({$post_category_id}, '{$post_title}', '{$post_author}', '{$post_date}', '{$post_image}', '{$post_content}', '{$post_tags}', '{$post_status}', {$post_comment_count}) ";
+
+                            $addPost =  mysqli_query($connection, $query);
+                            querryCheck($addPost);
+                        }
+                        if ($i==0) {
+                            echo "<div class='alert alert-success'>";
+                                echo "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>";
+                                echo "Post(s)  Duplicated";
+                            echo "</div>";
+                        }
+                        
+                    break;
 
                     case 'delete':
                         $query = "DELETE FROM posts WHERE post_id = {$postIdFromCheckbox} ";
