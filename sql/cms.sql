@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Sep 02, 2016 at 09:07 PM
+-- Generation Time: Aug 29, 2016 at 09:07 PM
 -- Server version: 5.7.13-log
 -- PHP Version: 7.0.9
 
@@ -109,6 +109,24 @@ INSERT INTO `posts` (`post_id`, `post_category_id`, `post_title`, `post_author`,
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `salts`
+--
+
+CREATE TABLE `salts` (
+  `id` int(11) NOT NULL,
+  `rand_salts` varchar(255) NOT NULL DEFAULT '$2y$10$xdrvgybhunjimkoqscwdve'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `salts`
+--
+
+INSERT INTO `salts` (`id`, `rand_salts`) VALUES
+(1, '$2y$10$xdrvgybhunjimkoqscwdve');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
@@ -121,21 +139,20 @@ CREATE TABLE `users` (
   `user_email` varchar(255) NOT NULL,
   `user_image` text NOT NULL,
   `user_role` varchar(255) NOT NULL,
-  `user_status` varchar(255) NOT NULL,
-  `user_randSalt` varchar(255) NOT NULL
+  `user_status` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_id`, `username`, `password`, `user_firstname`, `user_lastname`, `user_email`, `user_image`, `user_role`, `user_status`, `user_randSalt`) VALUES
-(1, 'cms', 'cms1234', 'A CMS', 'Guy', 'cmsguy@gmail.com', 'cms_guy.png', 'admin', 'declined', ''),
-(2, 'cmsuser', 'cmsuser1234', 'User', 'CMS', 'user@cms.ca', 'user_cms.png', 'subscriber', 'approved', ''),
-(5, 'user', 'user1234', 'Bruce', 'Wayne', 'bruce@wayne.ca', 'user_cms.png', 'subscriber', 'approved', '0'),
-(7, 'sadmin', 'sadmin1234', 'Clark', 'is Superman', 'super@admin.ca', 'user_female.png', 'admin', 'approved', '0'),
-(8, 'jane', 'jane1234', 'Jane', 'Doe', 'jane@doe.ca', 'user_female.png', 'subscriber', 'approved', '0'),
-(9, 'test', 'test1234', 'Test', 'User', 'test@amsdvca.ca', 'user_cms.png', 'subscriber', 'declined', '0');
+INSERT INTO `users` (`user_id`, `username`, `password`, `user_firstname`, `user_lastname`, `user_email`, `user_image`, `user_role`, `user_status`) VALUES
+(1, 'cms', '$2y$10$xdrvgybhunjimkoqscwdveTL9LVac.WWFc6NVcWM/MB26jS8mF27u', 'A CMS', 'Guy', 'cmsguy@gmail.com', 'cms_guy.png', 'admin', 'declined'),
+(2, 'cmsuser', '$2y$10$xdrvgybhunjimkoqscwdveKzi4fC.HAtFwZrWjjFh7UWY2LFx.0vm', 'User', 'CMS', 'user@cms.ca', 'user_cms.png', 'subscriber', 'approved'),
+(5, 'user', '$2y$10$xdrvgybhunjimkoqscwdveCZHMfXA.kGft5eatk9bVEwKQf9nLtPG', 'Bruce', 'Wayne', 'bruce@wayne.ca', 'user_cms.png', 'subscriber', 'approved'),
+(7, 'sadmin', '$2y$10$xdrvgybhunjimkoqscwdvex4/CafgrEnVxn5wWWL.r9ovom9IWZRm', 'Clark', 'is Superman', 'super@admin.ca', 'user_female.png', 'admin', 'approved'),
+(8, 'jane', '$2y$10$xdrvgybhunjimkoqscwdvel3LHsEd/iv4q6sZQqUxp40HmFnSu/2i', 'Jane', 'Doe', 'jane@doe.ca', 'user_female.png', 'subscriber', 'approved'),
+(9, 'test', '$2y$10$xdrvgybhunjimkoqscwdvei5pVnBPMHbN5p8Gi562exQpuUFqpGNi', 'Test', 'User', 'test@amsdvca.ca', 'user_cms.png', 'subscriber', 'declined');
 
 --
 -- Indexes for dumped tables
@@ -158,6 +175,12 @@ ALTER TABLE `comments`
 --
 ALTER TABLE `posts`
   ADD PRIMARY KEY (`post_id`);
+
+--
+-- Indexes for table `salts`
+--
+ALTER TABLE `salts`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `users`
@@ -184,6 +207,11 @@ ALTER TABLE `comments`
 --
 ALTER TABLE `posts`
   MODIFY `post_id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+--
+-- AUTO_INCREMENT for table `salts`
+--
+ALTER TABLE `salts`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `users`
 --

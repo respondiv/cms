@@ -1,5 +1,6 @@
 <?php include "includes/header.php"             /* Include Header */ ?> 
 <?php include "includes/nav.php"                /* Include Navigation */ ?> 
+<?php registerUser();                   /* Call registerUser funciton */ ?>
 
     <!-- Page Content -->
     <div class="container">
@@ -29,7 +30,7 @@
                                         <div class="help-block with-errors"></div>
                                     </div>
                             
-                                    <input type="submit" name="submit" id="btn-login" class="btn btn-custom btn-lg btn-block" value="Register">
+                                    <input type="submit" name="registration_submit" id="btn-login" class="btn btn-custom btn-lg btn-block" value="Register">
                                 </form>
                              
                             </div>

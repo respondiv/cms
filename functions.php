@@ -120,6 +120,8 @@
     	global $connection;
     	if (isset($_POST['search_submit'])) {
     		$search = $_POST['search'];
+            $search = mysqli_real_escape_string($connection, $search);
+
 
             // check whether the search keyword is empty
             if (empty($search)) {
@@ -505,6 +507,11 @@
             $comment_status = "pending";
             $comment_post_id = $_POST['comment_post_id'];
 
+            // prevent mysql injection
+            $comment_author = mysqli_real_escape_string($connection, $comment_author);
+            $comment_email = mysqli_real_escape_string($connection, $comment_email);
+            $comment_content = mysqli_real_escape_string($connection, $comment_content);
+
             $query = "INSERT INTO comments(comment_author, comment_email, comment_content, comment_date, comment_status, comment_post_id) ";
             $query .= "VALUES ('{$comment_author}', '{$comment_email}', '{$comment_content}', now(), '{$comment_status}', $comment_post_id) ";
 
@@ -580,7 +587,45 @@
     }
 
 
+    // registration form
+    function registerUser(){
+        global $connection;
+        if (isset($_POST['registration_submit'])) {
+            $username = $_POST['username']; 
+            $email = $_POST['email'];
+            $password = $_POST['password'];
 
+            $username = mysqli_real_escape_string($connection, $username);
+            $email = mysqli_real_escape_string($connection, $email);
+            $password = mysqli_real_escape_string($connection, $password);
+
+            // for password Encryption
+            $user_randSalt  = getSaltFromDB();
+            $password = crypt($password, $user_randSalt);
+
+
+            $query = "INSERT INTO users (username, user_email, password, user_role, user_firstname, user_lastname, user_image,user_status) ";
+            $query .= "VALUES ('{$username}', '{$email}', '{$password}', 'subscriber','','','','')";
+
+            $register_user = mysqli_query($connection, $query);
+            querryCheck($register_user);
+
+        }
+
+    }
+
+    // get user salt
+    function getSaltFromDB(){
+        global $connection;
+        $query = "SELECT * FROM salts where id = 1 ";
+        $get_salts = mysqli_query($connection, $query);
+        querryCheck($get_salts);
+        while ($row = mysqli_fetch_assoc($get_salts)) {
+            $randSalt = $row['rand_salts'];
+            return $randSalt;
+        }
+
+    }
 
 
 

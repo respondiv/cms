@@ -5,6 +5,9 @@
 		global $connection;
 		 if (isset($_POST['submit'])) {
             $cat_title = $_POST['cat_title'];
+            // prevent mysql injection
+            $cat_title = mysqli_real_escape_string($connection, $cat_title);
+
 
             if ($cat_title =="" || empty($cat_title)) {
                 header("Location: categories.php?emptyCategoryName=true");
@@ -32,6 +35,7 @@
 		//Step - 1: First Display the edit box with category name to make changes
 		if (isset($_GET['edit'])) {
 		    $cat_id_update = $_GET['edit'];
+
 		    $query = "SELECT * FROM categories WHERE cat_id = $cat_id_update ";
 		    $edit_category = mysqli_query($connection,$query);
 
@@ -49,6 +53,10 @@
 		// Step - 2: When Update button is clicked, update the category name
 		if (isset($_POST['update'])) {
 		    $cat_title_update = $_POST['cat_title_update'];
+
+            // prevent mysql injection
+            $cat_title_update = mysqli_real_escape_string($connection, $cat_title_update);
+
 		    $query = "UPDATE categories SET cat_title = '{$cat_title_update}' WHERE cat_id = {$cat_id_update} ";
 		    $update_category = mysqli_query($connection, $query);
 		    // Check if the query is good
@@ -196,6 +204,13 @@
            $post_date = $_POST['post_date'];            
            $post_comment_count = 0;
 
+           // prevent mysql injection
+            $post_title = mysqli_real_escape_string($connection, $post_title);
+            $post_content = mysqli_real_escape_string($connection, $post_content);
+            $post_tags = mysqli_real_escape_string($connection, $post_tags);
+            $post_author = mysqli_real_escape_string($connection, $post_author);
+
+
            // move uploaded file from temp location to images folder of CMS
            move_uploaded_file($post_image_temp, "../images/{$post_image}");
 
@@ -293,6 +308,13 @@
             $post_image_temp = $_FILES['post_image']['tmp_name'];
             $post_date = $_POST['post_date'];
             $post_date_if_empty = date('d-m-y');        // this format's the date into MySQL acceptable format
+
+
+            // prevent mysql injection
+            $post_title = mysqli_real_escape_string($connection, $post_title);
+            $post_content = mysqli_real_escape_string($connection, $post_content);
+            $post_tags = mysqli_real_escape_string($connection, $post_tags);
+            $post_author = mysqli_real_escape_string($connection, $post_author);
 
             if ($post_image_temp = "" || empty($post_image_temp)) {
                 $post_image = $post_image_current; 
@@ -618,6 +640,13 @@
             $comment_author = $_POST['comment_author'];
             $comment_email = $_POST['comment_email'];
 
+            // prevent mysql injection
+            $comment_content = mysqli_real_escape_string($connection, $comment_content);
+            $comment_author = mysqli_real_escape_string($connection, $comment_author);
+            $comment_email = mysqli_real_escape_string($connection, $comment_email);
+
+
+
             $query = "UPDATE comments SET ";
             //$query .= "comment_status = '{$comment_status}', ";
             $query .= "comment_content = '{$comment_content}', ";
@@ -736,10 +765,9 @@
             $user_email = $row['user_email']; 
             $user_role = $row['user_role'];
             $user_status = $row['user_status'];
-            $user_randSalt = $row['user_randSalt'];
 
             
-            $rows[] = compact('user_id','username','password','user_firstname','user_lastname','user_image','user_email','user_role','user_status','user_randSalt');
+            $rows[] = compact('user_id','username','password','user_firstname','user_lastname','user_image','user_email','user_role','user_status');
             
         }
             if (empty($rows)) {     // return empty array if no results found
@@ -789,29 +817,33 @@
     function addUsers(){
         global $connection;
         if (isset($_POST['create_users'])) {
-            $username = $_POST['username']; 
-            $password = $_POST['password']; 
+            $username = $_POST['username'];
+            $password = $_POST['password'];
             $user_firstname = $_POST['user_firstname']; 
             $user_lastname = $_POST['user_lastname']; 
             $user_email = $_POST['user_email']; 
             $user_role = $_POST['user_role'];
             $user_status = $_POST['user_status'];
-            // $user_randSalt = $_POST['user_randSalt'];
-            $user_randSalt = 0;
             $user_image = basename($_FILES['user_image']['name']);
             $user_image_temp = $_FILES['user_image']['tmp_name'];
+
+            // prevent mysql injection
+            $user_firstname = mysqli_real_escape_string($connection, $user_firstname);
+            $user_lastname = mysqli_real_escape_string($connection, $user_lastname);
+            $user_email = mysqli_real_escape_string($connection, $user_email);
+            $username = mysqli_real_escape_string($connection, $username);
+            $password = mysqli_real_escape_string($connection, $password);
+            
+            // for password Encryption
+            $user_randSalt  = getSaltFromDB();
+            $password = crypt($password, $user_randSalt);        
 
            // move uploaded file from temp location to images folder of CMS
            move_uploaded_file($user_image_temp, "images/users/{$user_image}");
 
          
-           $query = "INSERT INTO users(username, password, user_firstname, user_lastname, user_image, user_email, user_role, user_status,user_randSalt ) ";
-           $query .= "VALUES('{$username}','{$password}','{$user_firstname}','{$user_lastname}','{$user_image}','{$user_email}','{$user_role}','{$user_status}',{$user_randSalt}) ";
-
-
-           //  $query = "INSERT INTO posts(post_category_id, post_title, post_author, post_date, post_image, post_content, post_tags, post_status, post_comment_count) ";
-           // $query .= "VALUES('{$post_title}', '{$post_author}', '{$post_date}', '{$post_image}', '{$post_content}', '{$post_tags}', '{$post_status}') ";
-
+           $query = "INSERT INTO users(username, password, user_firstname, user_lastname, user_image, user_email, user_role, user_status) ";
+           $query .= "VALUES('{$username}','{$password}','{$user_firstname}','{$user_lastname}','{$user_image}','{$user_email}','{$user_role}','{$user_status}' ) ";
 
            $add_new_user = mysqli_query($connection,$query);
 
@@ -852,8 +884,7 @@
                 $user_email = $row['user_email']; 
                 $user_role = $row['user_role'];
                 $user_status = $row['user_status'];
-                $user_randSalt = $row['user_randSalt'];
-                return compact('user_id','username','password','user_firstname','user_lastname','user_image','user_email','user_role','user_status','user_randSalt');                              
+                return compact('user_id','username','password','user_firstname','user_lastname','user_image','user_email','user_role','user_status');                              
             }
         }
 
@@ -875,7 +906,19 @@
             $user_email = $_POST['user_email']; 
             $user_role = $_POST['user_role'];
             $user_status = $_POST['user_status'];
-            // $user_randSalt = $_POST['user_randSalt'];
+
+            // prevent mysql injection
+            $user_firstname = mysqli_real_escape_string($connection, $user_firstname);
+            $user_lastname = mysqli_real_escape_string($connection, $user_lastname);
+            $user_email = mysqli_real_escape_string($connection, $user_email);
+            $username = mysqli_real_escape_string($connection, $username);
+            $password = mysqli_real_escape_string($connection, $password);
+            
+            // for password Encryption
+            $user_randSalt  = getSaltFromDB();
+            $password = crypt($password, $user_randSalt); 
+
+
             $user_image = basename($_FILES['user_image']['name']);
             $user_image_temp = $_FILES['user_image']['tmp_name'];
 
@@ -1308,5 +1351,37 @@
         }
         
     }
+
+    // get user salt
+    function getSaltFromDB(){
+        global $connection;
+        $query = "SELECT * FROM salts where id = 1 ";
+        $get_salts = mysqli_query($connection, $query);
+        querryCheck($get_salts);
+        while ($row = mysqli_fetch_assoc($get_salts)) {
+            $randSalt = $row['rand_salts'];
+            return $randSalt;
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ?>
