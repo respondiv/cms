@@ -97,7 +97,7 @@
                             echo "<a href='post.php?p_id={$value['post_id']}'>{$value['post_title']}</a>";
                         echo "</h2>";
                         echo "<p class='lead'>";
-                            echo "by <a href='#'>{$value['post_author']}</a>";
+                            echo "by <a href='author.php?author={$value['post_author']}'>{$value['post_author']}</a>";
                         echo "</p>";
                         echo "<p><span class='glyphicon glyphicon-time'></span> Posted on {$value['post_date']} | <span class='glyphicon glyphicon-briefcase'></span> Posted in {$value['post_category_name']} | <span class='glyphicon glyphicon-comment'></span> {$value['post_comment_count']} </p>";
                         echo "<hr>";
@@ -184,7 +184,7 @@
 	                        echo "<a href='post.php?p_id={$value['post_id']}'>{$value['post_title']}</a>";
 	                    echo "</h2>";
 	                    echo "<p class='lead'>";
-	                        echo "by <a href='#'>{$value['post_author']}</a>";
+                            echo "by <a href='author.php?author={$value['post_author']}'>{$value['post_author']}</a>";
 	                    echo "</p>";
 	                    echo "<p><span class='glyphicon glyphicon-time'></span> Posted on {$value['post_date']} | <span class='glyphicon glyphicon-briefcase'></span> Posted in {$value['post_category_name']} | <span class='glyphicon glyphicon-comment'></span> {$value['post_comment_count']} </p>";
 	                    echo "<hr>";
@@ -374,7 +374,7 @@
 
                 echo "<!-- Author -->";
                 echo "<p class='lead'>";
-                    echo "by <a href='#'>{$post_author}</a>";
+                    echo "by <a href='author.php?author={$post_author}'>{$post_author}</a>";
                 echo "</p>";
 
                 echo "<hr>";
@@ -470,7 +470,7 @@
                             echo "<a href='post.php?p_id={$value['post_id']}'>{$value['post_title']}</a>";
                         echo "</h2>";
                         echo "<p class='lead'>";
-                            echo "by <a href='#'>{$value['post_author']}</a>";
+                            echo "by <a href='author.php?author={$value['post_author']}'>{$value['post_author']}</a>";
                         echo "</p>";
                         echo "<p><span class='glyphicon glyphicon-time'></span> Posted on {$value['post_date']} | <span class='glyphicon glyphicon-briefcase'></span> Posted in {$value['post_category_name']} | <span class='glyphicon glyphicon-comment'></span> {$value['post_comment_count']} </p>";
                         echo "<hr>";
@@ -628,7 +628,92 @@
     }
 
 
+    // query all posts from Author
+     function queryPostsFromAuthor(){
+        global $connection;
+        if (isset($_GET['author'])) {
+            $author_name = $_GET['author'];
+       
+            $query = "SELECT * FROM posts WHERE post_author = '{$author_name}' AND post_status = 'published' ";
+            $query_post_from_author = mysqli_query($connection,$query);
 
+            querryCheck($query_post_from_author);
+
+            while($row = mysqli_fetch_assoc($query_post_from_author)){
+                $post_id = $row['post_id']; 
+                $post_category_id = $row['post_category_id']; 
+                $post_title = $row['post_title']; 
+                $post_author = $row['post_author']; 
+                $post_date = $row['post_date']; 
+                $post_image = $row['post_image']; 
+                $post_content = $row['post_content']; 
+                $post_content = mb_substr($post_content, 0, 200);
+                $post_tags = $row['post_tags'];
+                $post_status = $row['post_status'];
+                $post_comment_count = $row['post_comment_count'];
+                $post_category_name = categoryName($post_category_id);
+
+                
+                $rows[] = compact('post_id','post_status','post_title','post_content','post_category_id','post_author','post_tags','post_image','post_date','post_comment_count','post_category_name');
+            
+            }
+
+            if (empty($rows)) {     // return empty array if no results found
+                $rows = array ();
+            }
+
+            return $rows;       
+        }
+    }
+
+
+
+    // Display all post from Author
+    function displayPostsFromAuthor(){
+        if (isset($_GET['author'])) {
+            $post_author_name = $_GET['author'];
+        }
+
+        $new_array = queryPostsFromAuthor();
+
+        if (empty($new_array)) {
+                echo "<h2 class='page-header'>";
+                    echo "All Posts From Author: {$post_author_name}";
+                echo "</h2>";
+                echo "<div class='alert alert-danger'>";
+                    echo "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>";
+                    echo "No Post Found From Author <strong>{$post_author_name}</strong>. Try Searching using different Keywords or viewing other category page or homepage.";
+                    echo "</div>";
+                echo "<div class='row'>";
+                    displaySearchForm();
+                echo "</div>";
+        }
+        else{
+            $new_array = arraySort($new_array, 'post_date', SORT_DESC);
+                        echo "<h2 class='page-header'>";
+                            echo "All Posts from Author: {$post_author_name}";
+                        echo "</h2>";
+            foreach ($new_array as $key => $value) {
+                        echo("<!-- Blog Post --> ");
+                        echo "<h2>";
+                            echo "<a href='post.php?p_id={$value['post_id']}'>{$value['post_title']}</a>";
+                        echo "</h2>";
+                        echo "<p class='lead'>";
+                            echo "by <a href='author.php?author={$value['post_author']}'>{$value['post_author']}</a>";
+                        echo "</p>";
+                        echo "<p><span class='glyphicon glyphicon-time'></span> Posted on {$value['post_date']} | <span class='glyphicon glyphicon-briefcase'></span> Posted in {$value['post_category_name']} | <span class='glyphicon glyphicon-comment'></span> {$value['post_comment_count']} </p>";
+                        echo "<hr>";
+                        echo "<a href='post.php?p_id={$value['post_id']}'><img class='img-responsive' src='images/{$value['post_image']}'></a>";
+                        echo "<hr>";
+                        echo "<p>{$value['post_content']} .....</p>";
+                        echo "<a class='btn btn-primary' href='post.php?p_id={$value['post_id']}''>Read More <span class='glyphicon glyphicon-chevron-right'></span></a>";
+
+                        echo "<hr>";
+
+            }
+        }
+
+    }
 
 
 

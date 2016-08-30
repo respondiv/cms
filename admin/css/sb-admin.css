@@ -223,6 +223,12 @@ ul.alert-dropdown {
     color: #df8a13;
 }
 
+
+
+/************************************************
+**************** Custom CSS Code ****************
+************************************************/
+
 .top1 { margin-top:1%; }
 .top2 { margin-top:2%; }
 .top3 { margin-top:3%; }
@@ -235,6 +241,31 @@ ul.alert-dropdown {
 .bottom10 { margin-bottom:10%; }
 
 #bulkOptionsContainer{padding-left: 0px;}
+
+#load-screen {
+background: url(../images/assets/header-back.png);
+position: fixed;
+z-index: 10000;
+top:0px;
+width: 100%;
+height: 1600px;
+
+}
+
+
+#loading {
+
+width: 500px;
+height: 500px;
+margin: 10% auto;
+background: url(../images/assets/loader.gif);
+background-size: 40%;
+background-repeat: no-repeat;
+background-position: center;
+
+}
+
+
 
 @media(max-width:768px) {
     .top1-m { margin-top:1%; }
