@@ -67,3 +67,5 @@
                                 </tbody>
                             </table> 
                         </form>
+                        <?php include("delete_modal.php"); ?>
+                        <?php myPaginationUsers();     // display Pagination ?>

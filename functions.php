@@ -81,7 +81,7 @@
 
     // Display All Posts
     function displayAllPosts(){
-
+    	global $connection;
         $new_array = queryAllPosts();
 
         if (empty($new_array)) {
@@ -94,7 +94,7 @@
             $new_array = arraySort($new_array, 'post_date', SORT_DESC);
 
             if (isset($_GET['page'])) {
-                $pagePerPost = $_GET['page'];                
+                $pagePerPost = escapeString($_GET['page']);               
             }
             else{
                 $pagePerPost = "";
@@ -108,10 +108,7 @@
             }   
 
 
-                $new_array = array_slice($new_array, $page_1, 5);
-
-
-
+            $new_array = array_slice($new_array, $page_1, 5);
 
             foreach ($new_array as $key => $value) {
                         echo("<!-- Blog Post --> ");
@@ -138,39 +135,38 @@
 
      //  display Pagination Home
     function myPaginationHome(){
-
+    	global $connection;
         // Page count for pagination
         $new_array = queryAllPosts();
         $count = ceil(count($new_array) / 5);
         
         if (isset($_GET['page'])) {
-                $pagePerPost = $_GET['page'];                
-        }else{
+                $pagePerPost = escapeString($_GET['page']);              
+        }
+        else{
             $pagePerPost = "";
         }
 
-        echo "<ul class='pager'> Pages ";
-            for ($i=1; $i <= $count ; $i++) { 
-                if ($i == $pagePerPost) {
-                    echo "<li><a class='active_link' href='?&page={$i}'>$i</a></li>";
-                }
-                else{
-                    echo "<li><a href='?&page={$i}'>$i</a></li>";
-                }
-            }
+        if ($count >= 2) {
+	        echo "<ul class='pager'> Pages ";
+	            for ($i=1; $i <= $count ; $i++) {
+	                if ($i == $pagePerPost) {
+	                    echo "<li><a class='active_link' href='?&page={$i}'>$i</a></li>";
+	                }
+	                else{
+	                    echo "<li><a href='?&page={$i}'>$i</a></li>";
+	                }
+	            }
 
-        echo "</ul>";
+	        echo "</ul>";
+	    }
     }
-
-
 
     // query search results
     function searchResultsQuery(){
     	global $connection;
-    	if (isset($_POST['search_submit'])) {
-    		$search = $_POST['search'];
-            $search = mysqli_real_escape_string($connection, $search);
-
+    	if (isset($_GET['search'])) {
+    		$search = escapeString($_GET['search']);
 
             // check whether the search keyword is empty
             if (empty($search)) {
@@ -212,6 +208,7 @@
 
     // Display Search Results
     function displaySearchResults(){
+    	global $connection;
     	$new_array = searchResultsQuery();
 
     	if (empty($new_array)) {
@@ -225,8 +222,25 @@
     	}
 
     	else{
-
         	$new_array = arraySort($new_array, 'post_date', SORT_DESC);
+
+        	 if (isset($_GET['page'])) {
+                $pagePerPost = escapeString($_GET['page']);              
+            }
+            else{
+                $pagePerPost = "";
+            }
+
+            if ($pagePerPost == 1 || $pagePerPost == "" ) {
+                         $page_1 = 0;
+            }
+            else{
+                $page_1 = ($pagePerPost * 5) - 5;
+            }   
+
+
+            $new_array = array_slice($new_array, $page_1, 5);
+
 	        foreach ($new_array as $key => $value) {
 	                echo("<!-- Blog Post --> ");
 	                    echo "<h2>";
@@ -249,6 +263,42 @@
 
     }
 
+    //  display Pagination Search
+    function myPaginationSearch(){
+    	global $connection;
+        // Page count for pagination
+        $new_array = searchResultsQuery();
+        $count = ceil(count($new_array) / 5);
+        
+        if (isset($_GET['page'])) {
+                $pagePerPost = escapeString($_GET['page']);                
+        }
+        else{
+            $pagePerPost = "";
+        }
+
+        if (isset($_GET['search'])) {
+    		$search = escapeString($_GET['search']);
+        }
+        else{
+        	$search = "";
+        }
+
+
+        if ($count >= 2) {
+	        echo "<ul class='pager'> Pages ";
+	            for ($i=1; $i <= $count ; $i++) {
+	                if ($i == $pagePerPost) {
+	                    echo "<li><a class='active_link' href='/search.php?search={$search}&page={$i}'>$i</a></li>";
+	                }
+	                else{
+	                    echo "<li><a href='/search.php?search={$search}&page={$i}'>$i</a></li>";
+	                }
+	            }
+
+	        echo "</ul>";
+	    }
+    }
 
     // query All Category
     function queryAllCategory(){
@@ -300,11 +350,11 @@
 
     // Display Search Bar
     function displaySearchForm(){
-                    echo "<form action='search.php' method='post'>";
+                    echo "<form action='search.php' method='get'>";
                     echo "<div class='input-group'>";
                         echo "<input type='text' class='form-control' name='search'>";
                         echo "<span class='input-group-btn'>";
-                            echo "<button class='btn btn-default' type='submit' name='search_submit'>";
+                            echo "<button class='btn btn-default' type='submit' name=''>";
                                 echo "<span class='glyphicon glyphicon-search'></span>";
                         echo "</button>";
                         echo "</span>";
@@ -398,8 +448,10 @@
     // Display Individual posts
     function displayPost(){
         global $connection;
+
         if (isset($_GET['p_id'])) {
             $post_id = $_GET['p_id'];
+            $post_id = mysqli_real_escape_string($connection, $post_id); 
        
             $query = "SELECT * FROM posts WHERE post_id = $post_id ";
             $display_post = mysqli_query($connection,$query);
@@ -417,6 +469,10 @@
                 $post_status = $row['post_status'];
                 $post_comment_count = $row['post_comment_count'];
                 $post_category_name = categoryName($post_category_id);
+
+                if ($post_status == 'draft') {
+                    isLoggedInAndisAdmin();
+                }
 
                 echo "<!-- Title -->";
                 echo "<h1>{$post_title}</h1>";
@@ -452,6 +508,7 @@
         global $connection;
         if (isset($_GET['category'])) {
             $cat_id = $_GET['category'];
+            $cat_id = mysqli_real_escape_string($connection, $cat_id);
        
             $query = "SELECT * FROM posts WHERE post_category_id = $cat_id AND post_status = 'published' ";
             $query_post_in_category = mysqli_query($connection,$query);
@@ -489,8 +546,9 @@
 
     // Display All Posts in Category
     function displayPostsInCategory(){
+    	global $connection;
         if (isset($_GET['category'])) {
-            $cat_id = $_GET['category'];
+            $cat_id = escapeString($_GET['category']);
             $post_category_name = categoryName($cat_id);
         }
 
@@ -510,36 +568,94 @@
         }
         else{
             $new_array = arraySort($new_array, 'post_date', SORT_DESC);
-                        echo "<h2 class='page-header'>";
-                            echo "All Posts in Category: {$post_category_name}";
-                        echo "</h2>";
-            foreach ($new_array as $key => $value) {
-                        echo("<!-- Blog Post --> ");
-                        echo "<h2>";
-                            echo "<a href='post.php?p_id={$value['post_id']}'>{$value['post_title']}</a>";
-                        echo "</h2>";
-                        echo "<p class='lead'>";
-                            echo "by <a href='author.php?author={$value['post_author']}'>{$value['post_author']}</a>";
-                        echo "</p>";
-                        echo "<p><span class='glyphicon glyphicon-time'></span> Posted on {$value['post_date']} | <span class='glyphicon glyphicon-briefcase'></span> Posted in {$value['post_category_name']} | <span class='glyphicon glyphicon-comment'></span> {$value['post_comment_count']} </p>";
-                        echo "<hr>";
-                        echo "<a href='post.php?p_id={$value['post_id']}'><img class='img-responsive' src='images/{$value['post_image']}'></a>";
-                        echo "<hr>";
-                        echo "<p>{$value['post_content']} .....</p>";
-                        echo "<a class='btn btn-primary' href='post.php?p_id={$value['post_id']}''>Read More <span class='glyphicon glyphicon-chevron-right'></span></a>";
 
-                        echo "<hr>";
+         	if (isset($_GET['page'])) {
+                $pagePerPost = $_GET['page'];
+                $pagePerPost = mysqli_real_escape_string($connection, $pagePerPost);                
+            }
+            else{
+                $pagePerPost = "";
+            }
+
+            if ($pagePerPost == 1 || $pagePerPost == "" ) {
+                         $page_1 = 0;
+            }
+            else{
+                $page_1 = ($pagePerPost * 5) - 5;
+            }   
+
+
+            $new_array = array_slice($new_array, $page_1, 5);
+
+
+            echo "<h2 class='page-header'>";
+                echo "All Posts in Category: {$post_category_name}";
+            echo "</h2>";
+            foreach ($new_array as $key => $value) {
+                echo("<!-- Blog Post --> ");
+                echo "<h2>";
+                    echo "<a href='post.php?p_id={$value['post_id']}'>{$value['post_title']}</a>";
+                echo "</h2>";
+                echo "<p class='lead'>";
+                    echo "by <a href='author.php?author={$value['post_author']}'>{$value['post_author']}</a>";
+                echo "</p>";
+                echo "<p><span class='glyphicon glyphicon-time'></span> Posted on {$value['post_date']} | <span class='glyphicon glyphicon-briefcase'></span> Posted in {$value['post_category_name']} | <span class='glyphicon glyphicon-comment'></span> {$value['post_comment_count']} </p>";
+                echo "<hr>";
+                echo "<a href='post.php?p_id={$value['post_id']}'><img class='img-responsive' src='images/{$value['post_image']}'></a>";
+                echo "<hr>";
+                echo "<p>{$value['post_content']} .....</p>";
+                echo "<a class='btn btn-primary' href='post.php?p_id={$value['post_id']}''>Read More <span class='glyphicon glyphicon-chevron-right'></span></a>";
+
+                echo "<hr>";
 
             }
         }
 
     }
 
+    //  display Pagination Category
+    function myPaginationCategory(){
+    	global $connection;
+        // Page count for pagination
+        $new_array = queryPostsInCategory();
+        $count = ceil(count($new_array) / 5);
+        
+        if (isset($_GET['page'])) {
+                $pagePerPost = escapeString($_GET['page']);               
+        }
+        else{
+            $pagePerPost = "";
+        }
+
+        if (isset($_GET['category'])) {
+    		$cat_id = escapeString($_GET['category']);
+        }
+        else{
+        	$cat_id = "";
+        }
+
+
+        if ($count >= 2) {
+	        echo "<ul class='pager'> Pages ";
+	            for ($i=1; $i <= $count ; $i++) {
+	                if ($i == $pagePerPost) {
+	                    echo "<li><a class='active_link' href='/category.php?category={$cat_id}&page={$i}'>$i</a></li>";
+	                }
+	                else{
+	                    echo "<li><a href='/category.php?category={$cat_id}&page={$i}'>$i</a></li>";
+	                }
+	            }
+
+	        echo "</ul>";
+	    }
+    }
+
 
     // Return Current Post ID
     function currentPostID(){
+    	global $connection;
         if (isset($_GET['p_id'])) {
-            $current_post_id = $_GET['p_id'];
+            $current_post_id = escapeString($_GET['p_id']);
             return $current_post_id;
         }
     }
@@ -549,17 +665,12 @@
     function createNewComment(){
         global $connection;
         if (isset($_POST['comment_submit'])) {
-            $comment_author = $_POST['comment_author'];
-            $comment_email = $_POST['comment_email'];
-            $comment_content = $_POST['comment_content'];
+            $comment_author = escapeString($_POST['comment_author']);
+            $comment_email = escapeString($_POST['comment_email']);
+            $comment_content = escapeString($_POST['comment_content']);
             $comment_date = date('d-m-y');
             $comment_status = "pending";
             $comment_post_id = $_POST['comment_post_id'];
-
-            // prevent mysql injection
-            $comment_author = mysqli_real_escape_string($connection, $comment_author);
-            $comment_email = mysqli_real_escape_string($connection, $comment_email);
-            $comment_content = mysqli_real_escape_string($connection, $comment_content);
 
             $query = "INSERT INTO comments(comment_author, comment_email, comment_content, comment_date, comment_status, comment_post_id) ";
             $query .= "VALUES ('{$comment_author}', '{$comment_email}', '{$comment_content}', now(), '{$comment_status}', $comment_post_id) ";
@@ -613,6 +724,12 @@
 
     // Display Login Form
     function displayLoginForm(){
+        if (isset($_SESSION['user_firstname'])) {
+            echo "<p>Welcome " . $_SESSION['user_firstname'] . " ! You are Logged In.</p>";
+            echo "<a class='btn btn-primary' href='includes/logout.php'>Logout</a>";
+        }
+        else{
+                    echo "<h4>Login</h4>";
                     echo "<form role='form' action='includes/login.php' method='post' data-toggle='validator' >";
                     // echo "<form role='form' action='' method='post' data-toggle='validator' >";
                             echo "<div class='form-group'>";
@@ -633,6 +750,7 @@
                                 echo "<a href='/registration.php'>Register</a>";
                             echo "</div>";                            
                     echo "</form> ";
+        }
     }
 
 
@@ -640,18 +758,11 @@
     function registerUser(){
         global $connection;
         if (isset($_POST['registration_submit'])) {
-            $username = $_POST['username']; 
-            $email = $_POST['email'];
-            $password = $_POST['password'];
+            $username = escapeString($_POST['username']); 
+            $email = escapeString($_POST['email']);
+            $password = escapeString($_POST['password']);
 
-            $username = mysqli_real_escape_string($connection, $username);
-            $email = mysqli_real_escape_string($connection, $email);
-            $password = mysqli_real_escape_string($connection, $password);
-
-            // for password Encryption
-            $user_randSalt  = getSaltFromDB();
-            $password = crypt($password, $user_randSalt);
-
+            $password = password_hash($password, PASSWORD_BCRYPT, array('cost' => 10));
 
             $query = "INSERT INTO users (username, user_email, password, user_role, user_firstname, user_lastname, user_image,user_status) ";
             $query .= "VALUES ('{$username}', '{$email}', '{$password}', 'subscriber','','','','')";
@@ -663,25 +774,14 @@
 
     }
 
-    // get user salt
-    function getSaltFromDB(){
-        global $connection;
-        $query = "SELECT * FROM salts where id = 1 ";
-        $get_salts = mysqli_query($connection, $query);
-        querryCheck($get_salts);
-        while ($row = mysqli_fetch_assoc($get_salts)) {
-            $randSalt = $row['rand_salts'];
-            return $randSalt;
-        }
 
-    }
 
 
     // query all posts from Author
      function queryPostsFromAuthor(){
         global $connection;
         if (isset($_GET['author'])) {
-            $author_name = $_GET['author'];
+            $author_name = escapeString($_GET['author']);
        
             $query = "SELECT * FROM posts WHERE post_author = '{$author_name}' AND post_status = 'published' ";
             $query_post_from_author = mysqli_query($connection,$query);
@@ -719,8 +819,9 @@
 
     // Display all post from Author
     function displayPostsFromAuthor(){
+    	global $connection;
         if (isset($_GET['author'])) {
-            $post_author_name = $_GET['author'];
+            $post_author_name = escapeString($_GET['author']);
         }
 
         $new_array = queryPostsFromAuthor();
@@ -765,41 +866,49 @@
     }
 
 
+    // verify is user is logged in and the role is admin before executing any codes
+    function isLoggedInAndisAdmin(){
+        if (isset($_SESSION['user_role'])) {
+            if ($_SESSION['user_role'] == 'admin') {
+                // all good
+            }
+            else{
+                header("Location: /");
+                die();
+            }
+        }
+        else{
+            header("Location: /");
+            die();
+        }
+
+    }
 
 
+    // Prevent SQL injection
+    function escapeString($string){
+        global $connection;
+        return mysqli_real_escape_string($connection, trim($string));
+    }
 
 
+    // Send Email from Contact Form
+    function contactForm(){
+        if (isset($_POST['contact_submit'])) {
+            $name = escapeString($_POST['name']);
+            $subject = escapeString($_POST['subject']);
+            $email = escapeString($_POST['email']);
+            $message = escapeString($_POST['message']);
+            // use wordwrap() if lines are longer than 70 characters
+            $message = wordwrap($message, 70);
+            $to = $email;
+            $from = "From: " . "no-reply@binarry.com";
 
+            // send email - syntax: mail(to,subject,message,headers,parameters);
+            mail($to,$subject, $message, $from);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        }
+    }
 
 
 

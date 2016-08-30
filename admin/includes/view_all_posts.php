@@ -58,3 +58,7 @@
                                 </tbody>
                             </table>
                         </form> 
+                        <?php include("delete_modal.php"); ?>
+                        <?php myPaginationAllPosts();     // display Pagination ?>
+
+                        

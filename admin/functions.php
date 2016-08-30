@@ -2,12 +2,10 @@
 
 	// Add New Category
 	function addCategories(){
+        isLoggedInAndisAdmin();
 		global $connection;
 		 if (isset($_POST['submit'])) {
-            $cat_title = $_POST['cat_title'];
-            // prevent mysql injection
-            $cat_title = mysqli_real_escape_string($connection, $cat_title);
-
+            $cat_title = escapeString($_POST['cat_title']);
 
             if ($cat_title =="" || empty($cat_title)) {
                 header("Location: categories.php?emptyCategoryName=true");
@@ -30,11 +28,12 @@
 
 	// Update Category: 
 	function updateCategory(){
+        isLoggedInAndisAdmin();
 		global $connection;
         global $cat_title;
 		//Step - 1: First Display the edit box with category name to make changes
 		if (isset($_GET['edit'])) {
-		    $cat_id_update = $_GET['edit'];
+		    $cat_id_update = escapeString($_GET['edit']);
 
 		    $query = "SELECT * FROM categories WHERE cat_id = $cat_id_update ";
 		    $edit_category = mysqli_query($connection,$query);
@@ -52,10 +51,7 @@
 
 		// Step - 2: When Update button is clicked, update the category name
 		if (isset($_POST['update'])) {
-		    $cat_title_update = $_POST['cat_title_update'];
-
-            // prevent mysql injection
-            $cat_title_update = mysqli_real_escape_string($connection, $cat_title_update);
+		    $cat_title_update = escapeString($_POST['cat_title_update']);
 
 		    $query = "UPDATE categories SET cat_title = '{$cat_title_update}' WHERE cat_id = {$cat_id_update} ";
 		    $update_category = mysqli_query($connection, $query);
@@ -68,6 +64,7 @@
 
 	// View Category List
 	function viewCategories(){
+        isLoggedInAndisAdmin();
 		global $connection;
 	 	$query = "SELECT * FROM categories ";
         $select_all_categories = mysqli_query($connection,$query);
@@ -82,7 +79,8 @@
             echo "<td>{$cat_id}</td>";
             echo "<td>{$cat_title}</td>";
             echo "<td><a href='categories.php?edit={$cat_id}'>Edit </a> | ";
-            echo "<a href='categories.php?delete={$cat_id}'> Delete </a></td>";
+            echo "<a href='#' rel='categories.php?delete={$cat_id}' class='delete_link'> Delete </a></td>";
+            // echo "<a href='categories.php?delete={$cat_id}'> Delete </a></td>";
             
             echo "</tr>";
         }
@@ -92,10 +90,12 @@
     //  Delete Selected Category
     function deleteCategory(){
     	global $connection;
+        isLoggedInAndisAdmin();
         // Delete Selected Categories
         if (isset($_GET['delete'])) {
             
-            $cat_id_delete = $_GET['delete'];
+            $cat_id_delete = escapeString($_GET['delete']);
+
             $query = "DELETE FROM categories WHERE cat_id = {$cat_id_delete}";
             $detele_category = mysqli_query($connection, $query);
             // Check if the query is good
@@ -157,6 +157,8 @@
 
     // View All Posts
     function viewPosts(){
+        isLoggedInAndisAdmin();
+        global $connection;
          $new_array = queryAllPosts();
 
         if (empty($new_array)) {
@@ -167,6 +169,24 @@
         }
         else{
             $new_array = arraySort($new_array, 'post_date', SORT_DESC);
+
+            if (isset($_GET['page'])) {
+                $pagePerPost = escapeString($_GET['page']);             
+            }
+            else{
+                $pagePerPost = "";
+            }
+
+            if ($pagePerPost == 1 || $pagePerPost == "" ) {
+                         $page_1 = 0;
+            }
+            else{
+                $page_1 = ($pagePerPost * 10) - 10;
+            }   
+
+
+            $new_array = array_slice($new_array, $page_1, 10);
+
             foreach ($new_array as $key => $value) {
                 echo "<tr>";
                 echo "<td class='hide-m'> <input class='checkBoxes' type='checkbox' name='checkBoxArray[]' value='{$value['post_id']}'> </td>";
@@ -181,35 +201,60 @@
                 echo "<td>{$value['post_status']}</td>";
                 echo "<td class='hide-m'>{$value['post_comment_count']}</td>";
                 echo "<td><a href='posts.php?source=edit_post&post_id={$value['post_id']}'> Edit</a> | ";
-                echo "<a href='posts.php?delete={$value['post_id']}'> Delete </a></td>";
+                echo "<a href='#' rel='posts.php?delete={$value['post_id']}' class='delete_link'> Delete </a></td>";
+                // echo "<a href='posts.php?delete={$value['post_id']}'> Delete </a></td>";
                 echo "</tr>";
             }
+        }
+    }
+
+    //  display Pagination All Posts
+    function myPaginationAllPosts(){
+        isLoggedInAndisAdmin();
+        global $connection;
+        // Page count for pagination
+        $new_array = queryAllPosts();
+        $count = ceil(count($new_array) / 10);
+        
+        if (isset($_GET['page'])) {
+                $pagePerPost = escapeString($_GET['page']);             
+        }
+        else{
+            $pagePerPost = "";
+        }
+
+        if ($count >= 2) {
+            echo "<ul class='pager'> Pages ";
+                for ($i=1; $i <= $count ; $i++) {
+                    if ($i == $pagePerPost) {
+                        echo "<li><a class='active_link' href='/admin/posts.php?page={$i}'>$i</a></li>";
+                    }
+                    else{
+                        echo "<li><a href='/admin/posts.php?page={$i}'>$i</a></li>";
+                    }
+                }
+
+            echo "</ul>";
         }
     }
 
 
     // Add New Posts
     function addPosts(){
+        isLoggedInAndisAdmin();
         global $connection;
         if (isset($_POST['create_post'])) {
            $post_status = $_POST['post_status'];
-           $post_title = $_POST['post_title'];
-           $post_content = $_POST['post_content'];
+           $post_title = escapeString($_POST['post_title']);
+           $post_content = escapeString($_POST['post_content']);
            $post_category_id = $_POST['post_category_id'];
-           $post_author = $_POST['post_author'];
-           $post_tags = $_POST['post_tags'];
+           $post_author = escapeString($_POST['post_author']);
+           $post_tags = escapeString($_POST['post_tags']);
            $post_image = basename($_FILES['post_image']['name']);
            $post_image_temp = $_FILES['post_image']['tmp_name'];
            $post_date_if_empty = date('d-m-y');               // this format's the date into MySQL acceptable format
            $post_date = $_POST['post_date'];            
            $post_comment_count = 0;
-
-           // prevent mysql injection
-            $post_title = mysqli_real_escape_string($connection, $post_title);
-            $post_content = mysqli_real_escape_string($connection, $post_content);
-            $post_tags = mysqli_real_escape_string($connection, $post_tags);
-            $post_author = mysqli_real_escape_string($connection, $post_author);
-
 
            // move uploaded file from temp location to images folder of CMS
            move_uploaded_file($post_image_temp, "../images/{$post_image}");
@@ -238,9 +283,11 @@
 
     // Delete Posts
     function deletePosts(){
+        isLoggedInAndisAdmin();
         global $connection;
         if (isset($_GET['delete'])) {
-            $delete_post_id = $_GET['delete'];
+            $delete_post_id = escapeString($_GET['delete']);
+
             $query = "DELETE FROM posts WHERE post_id = {$delete_post_id} ";
             $delete_selected_post = mysqli_query($connection,$query);
             // Check if the query is good
@@ -255,9 +302,10 @@
 
     // Step 1: First Display the edit page with existing content to make changes
     function editPostsStep1(){
+        isLoggedInAndisAdmin();
         global $connection;
         if (isset($_GET['post_id'])) {
-            $post_id_update = $_GET['post_id'];
+            $post_id_update = escapeString($_GET['post_id']);
             $query = "SELECT * FROM posts WHERE post_id = $post_id_update ";
             $edit_post_by_id = mysqli_query($connection, $query);
 
@@ -289,6 +337,7 @@
 
     // Step 2: Update the entered post content when Update button is pressed
     function editPostsStep2(){
+        isLoggedInAndisAdmin();
         global $connection;
 
         // retriving couple values from editPostsStep1() to resuse here 
@@ -299,22 +348,15 @@
         if (isset($_POST['update_post'])) {
             $post_id = $post_id;
             $post_status = $_POST['post_status'];
-            $post_title = $_POST['post_title'];
-            $post_content = $_POST['post_content'];
+            $post_title = escapeString($_POST['post_title']);
+            $post_content = escapeString($_POST['post_content']);
             $post_category_id = $_POST['post_category_id'];
-            $post_author = $_POST['post_author'];
-            $post_tags = $_POST['post_tags'];
+            $post_author = escapeString($_POST['post_author']);
+            $post_tags = escapeString($_POST['post_tags']);
             $post_image = basename($_FILES['post_image']['name']);
             $post_image_temp = $_FILES['post_image']['tmp_name'];
             $post_date = $_POST['post_date'];
             $post_date_if_empty = date('d-m-y');        // this format's the date into MySQL acceptable format
-
-
-            // prevent mysql injection
-            $post_title = mysqli_real_escape_string($connection, $post_title);
-            $post_content = mysqli_real_escape_string($connection, $post_content);
-            $post_tags = mysqli_real_escape_string($connection, $post_tags);
-            $post_author = mysqli_real_escape_string($connection, $post_author);
 
             if ($post_image_temp = "" || empty($post_image_temp)) {
                 $post_image = $post_image_current; 
@@ -357,6 +399,7 @@
 
      // Select Categories Dynamically for Add / Edit Posts
     function selectCategories(){
+        isLoggedInAndisAdmin();
         global $connection;
         $query = "SELECT * FROM categories ";
         $select_categories = mysqli_query($connection,$query);
@@ -388,10 +431,10 @@
 
     // Display different CRUD pages / forms in posts.php depending upon user's interaction
     function diffCrudInPosts (){
-
+        global $connection;
         //  get the value from URL to check what user's want to do
         if (isset($_GET['source'])) {
-            $source = $_GET['source'];
+            $source = escapeString($_GET['source']);
         }
         else{
             $source = "";
@@ -464,10 +507,10 @@
 
     // Display different CRUD pages / forms in comments.php depending upon user's interaction
     function diffCrudInComments(){
-
+        global $connection;
         //  get the value from URL to check what user's want to do
         if (isset($_GET['source'])) {
-            $source = $_GET['source'];
+            $source = escapeString($_GET['source']);
         }
         else{
             $source = "";
@@ -536,8 +579,9 @@
 
      // View all comments
      function viewAllComments(){
+        isLoggedInAndisAdmin();
          $new_array = queryAllComments();
-
+         global $connection;
         if (empty($new_array)) {
             echo "<div class='alert alert-danger'>";
             echo "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>";
@@ -546,6 +590,24 @@
         }
         else{
             $new_array = arraySort($new_array, 'comment_id', SORT_DESC);
+
+            if (isset($_GET['page'])) {
+                $pagePerPost = escapeString($_GET['page']);           
+            }
+            else{
+                $pagePerPost = "";
+            }
+
+            if ($pagePerPost == 1 || $pagePerPost == "" ) {
+                         $page_1 = 0;
+            }
+            else{
+                $page_1 = ($pagePerPost * 10) - 10;
+            }   
+
+
+            $new_array = array_slice($new_array, $page_1, 10);
+
             foreach ($new_array as $key => $value) {
                 echo "<tr>";
                 echo "<td class='hide-m'> <input class='checkBoxes' type='checkbox' name='checkBoxArray[]' value='{$value['comment_id']}'> </td>";
@@ -563,20 +625,52 @@
                 else{
                     echo "<a href='comments.php?approve={$value['comment_id']}'> Approve </a> | ";
                 }
-                echo "<a href='comments.php?delete={$value['comment_id']}'> Delete </a></td>";
+                echo "<a href='#' rel='comments.php?delete={$value['comment_id']}' class='delete_link'> Delete </a></td>";
+                // echo "<a href='comments.php?delete={$value['comment_id']}'> Delete </a></td>";
                 echo "</tr>";
             }
+        }
+    }
+
+    //  display Pagination All Comments
+    function myPaginationComments(){
+        isLoggedInAndisAdmin();
+        global $connection;
+        // Page count for pagination
+        $new_array = queryAllComments();
+        $count = ceil(count($new_array) / 10);
+        
+        if (isset($_GET['page'])) {
+                $pagePerPost = escapeString($_GET['page']);             
+        }
+        else{
+            $pagePerPost = "";
+        }
+
+        if ($count >= 2) {
+            echo "<ul class='pager'> Pages ";
+                for ($i=1; $i <= $count ; $i++) {
+                    if ($i == $pagePerPost) {
+                        echo "<li><a class='active_link' href='/admin/comments.php?page={$i}'>$i</a></li>";
+                    }
+                    else{
+                        echo "<li><a href='/admin/comments.php?page={$i}'>$i</a></li>";
+                    }
+                }
+
+            echo "</ul>";
         }
     }
 
 
     //  Delete Selected Comments
     function deleteComments(){
+        isLoggedInAndisAdmin();
         global $connection;
         // Delete Selected Categories
         if (isset($_GET['delete'])) {
             
-            $comment_id_delete = $_GET['delete'];
+            $comment_id_delete = escapeString($_GET['delete']);
 
             // if comments status is approved then decrease the no of comment in posts.
             $comment_status = geCommentStatusByID($comment_id_delete);
@@ -605,9 +699,10 @@
 
     // Edit Comments: Step 1 - Display the existing comments inside the input fields
     function editCommentsStep1(){
+        isLoggedInAndisAdmin();
         global $connection;
         if (isset($_GET['comment_id'])) {
-            $comment_id_update = $_GET['comment_id'];
+            $comment_id_update = escapeString($_GET['comment_id']);
             $query = "SELECT * FROM comments WHERE comment_id = $comment_id_update ";
             $edit_post_comment_id = mysqli_query($connection, $query);
 
@@ -629,23 +724,16 @@
     // Step 2: Update the entered comment content when Update button is pressed
     function editCommentsStep2(){
         global $connection;
-
+        isLoggedInAndisAdmin();
         // retriving couple values from editCommentsStep1() to resuse here 
         $get_val = editCommentsStep1();
         $comment_id = $get_val['comment_id'];
         
         if (isset($_POST['update_comment'])) {
             //$comment_status = $_POST['comment_status'];
-            $comment_content = $_POST['comment_content'];
-            $comment_author = $_POST['comment_author'];
-            $comment_email = $_POST['comment_email'];
-
-            // prevent mysql injection
-            $comment_content = mysqli_real_escape_string($connection, $comment_content);
-            $comment_author = mysqli_real_escape_string($connection, $comment_author);
-            $comment_email = mysqli_real_escape_string($connection, $comment_email);
-
-
+            $comment_content = escapeString($_POST['comment_content']);
+            $comment_author = escapeString($_POST['comment_author']);
+            $comment_email = escapeString($_POST['comment_email']);
 
             $query = "UPDATE comments SET ";
             //$query .= "comment_status = '{$comment_status}', ";
@@ -667,11 +755,13 @@
     // Approve / Decline Comments
 
     function approveDeclineComments(){
+        isLoggedInAndisAdmin();
         global $connection;
         // Decline Selected Comments
         if (isset($_GET['decline'])) {
             
-            $comment_id_decline = $_GET['decline'];
+            $comment_id_decline = escapeString($_GET['decline']);
+
             $query = "UPDATE comments SET comment_status = 'decline' WHERE comment_id = {$comment_id_decline}";
             $decline_comment = mysqli_query($connection, $query);
             // Check if the query is good
@@ -692,8 +782,9 @@
 
         // Approve Selected Comments
         if (isset($_GET['approve'])) {
-            
-            $comment_id_approve = $_GET['approve'];
+            global $connection;
+            $comment_id_approve = escapeString($_GET['approve']);
+
             $query = "UPDATE comments SET comment_status = 'approved' WHERE comment_id = {$comment_id_approve}";
             $approve_comment = mysqli_query($connection, $query);
             // Check if the query is good
@@ -780,8 +871,9 @@
 
     // View All Users
     function viewUsers(){
+        isLoggedInAndisAdmin();
          $new_array = queryAllUsers();
-
+         global $connection;
         if (empty($new_array)) {
             echo "<div class='alert alert-danger'>";
             echo "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>";
@@ -790,6 +882,24 @@
         }
         else{
             $new_array = arraySort($new_array, 'user_firstname', SORT_ASC);
+
+            if (isset($_GET['page'])) {
+                $pagePerPost = escapeString($_GET['page']);              
+            }
+            else{
+                $pagePerPost = "";
+            }
+
+            if ($pagePerPost == 1 || $pagePerPost == "" ) {
+                         $page_1 = 0;
+            }
+            else{
+                $page_1 = ($pagePerPost * 10) - 10;
+            }   
+
+
+            $new_array = array_slice($new_array, $page_1, 10);
+
             foreach ($new_array as $key => $value) {
                 echo "<tr>";
                 echo "<td class='hide-m'> <input class='checkBoxes' type='checkbox' name='checkBoxArray[]' value='{$value['user_id']}'> </td>";
@@ -807,36 +917,60 @@
                 else{
                     echo "<a href='users.php?approve={$value['user_id']}'> Approve </a> | ";
                 }
-                echo "<a href='users.php?delete={$value['user_id']}'> Delete </a></td>";
+                // echo "<a href='users.php?delete={$value['user_id']}'> Delete </a></td>";
+                echo "<a href='#' rel='users.php?delete={$value['user_id']}' class='delete_link'> Delete </a></td>";
                 echo "</tr>";
             }
         }
     }
 
+    //  display Pagination All Users
+    function myPaginationUsers(){
+        isLoggedInAndisAdmin();
+        global $connection;
+        // Page count for pagination
+        $new_array = queryAllUsers();
+        $count = ceil(count($new_array) / 10);
+        
+        if (isset($_GET['page'])) {
+                $pagePerPost = escapeString($_GET['page']);              
+        }
+        else{
+            $pagePerPost = "";
+        }
+
+        if ($count >= 2) {
+            echo "<ul class='pager'> Pages ";
+                for ($i=1; $i <= $count ; $i++) {
+                    if ($i == $pagePerPost) {
+                        echo "<li><a class='active_link' href='/admin/users.php?page={$i}'>$i</a></li>";
+                    }
+                    else{
+                        echo "<li><a href='/admin/users.php?page={$i}'>$i</a></li>";
+                    }
+                }
+
+            echo "</ul>";
+        }
+    }
+
+
     // Add New Users
     function addUsers(){
+        isLoggedInAndisAdmin();
         global $connection;
         if (isset($_POST['create_users'])) {
-            $username = $_POST['username'];
-            $password = $_POST['password'];
-            $user_firstname = $_POST['user_firstname']; 
-            $user_lastname = $_POST['user_lastname']; 
-            $user_email = $_POST['user_email']; 
+            $username = escapeString($_POST['username']);
+            $password = escapeString($_POST['password']);
+            $user_firstname = escapeString($_POST['user_firstname']); 
+            $user_lastname = escapeString($_POST['user_lastname']); 
+            $user_email = escapeString($_POST['user_email']); 
             $user_role = $_POST['user_role'];
             $user_status = $_POST['user_status'];
             $user_image = basename($_FILES['user_image']['name']);
             $user_image_temp = $_FILES['user_image']['tmp_name'];
 
-            // prevent mysql injection
-            $user_firstname = mysqli_real_escape_string($connection, $user_firstname);
-            $user_lastname = mysqli_real_escape_string($connection, $user_lastname);
-            $user_email = mysqli_real_escape_string($connection, $user_email);
-            $username = mysqli_real_escape_string($connection, $username);
-            $password = mysqli_real_escape_string($connection, $password);
-            
-            // for password Encryption
-            $user_randSalt  = getSaltFromDB();
-            $password = crypt($password, $user_randSalt);        
+            $password = password_hash($password, PASSWORD_BCRYPT, array('cost' => 10));  
 
            // move uploaded file from temp location to images folder of CMS
            move_uploaded_file($user_image_temp, "images/users/{$user_image}");
@@ -859,13 +993,14 @@
 
     // Edit users: Step 1 - Display the existing users inside the input fields
     function editUsersStep1(){
+        isLoggedInAndisAdmin();
         global $connection;
         if (isset($_GET['user_id']) || isset($_SESSION)) {
             if (empty($_GET['user_id'])) {
-               $user_id_update = $_SESSION['user_id'];
+               $user_id_update = escapeString($_SESSION['user_id']);
             }
             else{
-                $user_id_update = $_GET['user_id'];
+                $user_id_update = escapeString($_GET['user_id']);
             }
 
             $query = "SELECT * FROM users WHERE user_id = $user_id_update ";
@@ -893,31 +1028,24 @@
     // Step 2: Update the entered comment content when Update button is pressed
     function editUsersStep2(){
         global $connection;
-
+        isLoggedInAndisAdmin();
         $get_val = editUsersStep1();
         $user_id = $get_val['user_id'];
+        $user_current_password = $get_val['password'];
         $user_image_current = $get_val['user_image'];
        
         if (isset($_POST['update_users'])) {
-            $username = $_POST['username']; 
-            $password = $_POST['password']; 
-            $user_firstname = $_POST['user_firstname']; 
-            $user_lastname = $_POST['user_lastname']; 
-            $user_email = $_POST['user_email']; 
+            $username = escapeString($_POST['username']); 
+            $password = escapeString($_POST['password']); 
+            $user_firstname = escapeString($_POST['user_firstname']); 
+            $user_lastname = escapeString($_POST['user_lastname']); 
+            $user_email = escapeString($_POST['user_email']); 
             $user_role = $_POST['user_role'];
             $user_status = $_POST['user_status'];
 
-            // prevent mysql injection
-            $user_firstname = mysqli_real_escape_string($connection, $user_firstname);
-            $user_lastname = mysqli_real_escape_string($connection, $user_lastname);
-            $user_email = mysqli_real_escape_string($connection, $user_email);
-            $username = mysqli_real_escape_string($connection, $username);
-            $password = mysqli_real_escape_string($connection, $password);
-            
-            // for password Encryption
-            $user_randSalt  = getSaltFromDB();
-            $password = crypt($password, $user_randSalt); 
-
+            if ($user_current_password != $password) {
+                $password = password_hash($password, PASSWORD_BCRYPT, array('cost' => 10));
+            }
 
             $user_image = basename($_FILES['user_image']['name']);
             $user_image_temp = $_FILES['user_image']['tmp_name'];
@@ -958,8 +1086,10 @@
     // Delete Users
     function deleteUsers(){
         global $connection;
+        isLoggedInAndisAdmin();
         if (isset($_GET['delete'])) {
-            $delete_user_id = $_GET['delete'];
+            $delete_user_id = escapeString($_GET['delete']);
+
             $query = "DELETE FROM users WHERE user_id = {$delete_user_id} ";
             $delete_selected_user = mysqli_query($connection,$query);
             // Check if the query is good
@@ -972,11 +1102,13 @@
     // Approve / Decline users
 
     function approveDeclineUsers(){
+        isLoggedInAndisAdmin();
         global $connection;
         // Decline Selected users
         if (isset($_GET['decline'])) {
             
-            $user_id_decline = $_GET['decline'];
+            $user_id_decline = escapeString($_GET['decline']);
+
             $query = "UPDATE users SET user_status = 'declined' WHERE user_id = {$user_id_decline}";
             $decline_user = mysqli_query($connection, $query);
             // Check if the query is good
@@ -987,8 +1119,9 @@
 
         // Approve Selected users
         if (isset($_GET['approve'])) {
-            
-            $user_id_approve = $_GET['approve'];
+            global $connection;
+            $user_id_approve = escapeString($_GET['approve']);
+
             $query = "UPDATE users SET user_status = 'approved' WHERE user_id = {$user_id_approve}";
             $approve_user = mysqli_query($connection, $query);
             // Check if the query is good
@@ -1002,10 +1135,10 @@
 
     // Display different CRUD pages / forms in users.php depending upon user's interaction
     function diffCrudInUsers(){
-
+        global $connection;
         //  get the value from URL to check what user's want to do
         if (isset($_GET['source'])) {
-            $source = $_GET['source'];
+            $source = escapeString($_GET['source']);
         }
         else{
             $source = "";
@@ -1126,6 +1259,7 @@
 
     //  Bulk Update Posts with message.
     function allPostsCheckBoxes(){
+        isLoggedInAndisAdmin();
         global $connection;
         if (isset($_POST['checkBoxArray'])) {
             $i=0;
@@ -1224,6 +1358,7 @@
 
      //  Bulk Update Comments with message.
     function allCommentsCheckBoxes(){
+        isLoggedInAndisAdmin();
         global $connection;
         if (isset($_POST['checkBoxArray'])) {
             $i=0;
@@ -1289,6 +1424,7 @@
 
      //  Bulk Update Users with message.
     function allUsersCheckBoxes(){
+        isLoggedInAndisAdmin();
         global $connection;
         if (isset($_POST['checkBoxArray'])) {
             $i=0;
@@ -1352,21 +1488,30 @@
         
     }
 
-    // get user salt
-    function getSaltFromDB(){
-        global $connection;
-        $query = "SELECT * FROM salts where id = 1 ";
-        $get_salts = mysqli_query($connection, $query);
-        querryCheck($get_salts);
-        while ($row = mysqli_fetch_assoc($get_salts)) {
-            $randSalt = $row['rand_salts'];
-            return $randSalt;
+    // verify is user is logged in and the role is admin before executing any codes
+    function isLoggedInAndisAdmin(){
+        if (isset($_SESSION['user_role'])) {
+            if ($_SESSION['user_role'] == 'admin') {
+                // all good
+            }
+            else{
+                header("Location: /");
+                die();
+            }
+        }
+        else{
+            header("Location: /");
+            die();
         }
 
     }
 
 
-
+    // Prevent SQL injection
+    function escapeString($string){
+        global $connection;
+        return mysqli_real_escape_string($connection, trim($string));
+    }
 
 
 

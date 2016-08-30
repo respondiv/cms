@@ -1,37 +1,42 @@
 <?php include "includes/header.php"             /* Include Header */ ?> 
 <?php include "includes/nav.php"                /* Include Navigation */ ?> 
-<?php registerUser();                   /* Call registerUser funciton */ ?>
+<?php contactForm();                   /* Call registerUser funciton */ ?>
 
     <!-- Page Content -->
     <div class="container">
 
         <div class="row">
-            <?php if(!isset($_POST['registration_submit'])) { ?>
+            <?php if(!isset($_POST['contact_submit'])) { ?>
 
             <section id="login">
                 <div class="container">
                     <div class="row">
                         <div class="col-xs-6 col-xs-offset-3">
                             <div class="form-wrap">
-                            <h1>Register</h1>
+                            <h1>Contact US</h1>
                                 <form role="form" action="" method="post" id="login-form" autocomplete="off" data-toggle="validator">
                                     <div class="form-group">
-                                        <label for="username" class="sr-only">username</label>
-                                        <input type="text" name="username" id="username" class="form-control" placeholder="Enter Desired Username" required>
+                                        <label for="name" class="sr-only">Your Name</label>
+                                        <input type="text" name="name" id="name" class="form-control" placeholder="Enter Your Name" required>
                                         <div class="help-block with-errors"></div>
                                     </div>
                                      <div class="form-group">
-                                        <label for="email" class="sr-only">Email</label>
-                                        <input type="email" name="email" id="email" class="form-control" placeholder="somebody@example.com" data-error="Bruh, that email address is invalid" required>
+                                        <label for="email" class="sr-only">Your Email</label>
+                                        <input type="email" name="email" id="email" class="form-control" placeholder="Enter your email" data-error="Bruh, that email address is invalid" required>
                                         <div class="help-block with-errors"></div>
                                     </div>
                                      <div class="form-group">
-                                        <label for="password" class="sr-only">Password</label>
-                                        <input type="password" name="password" id="key" class="form-control" placeholder="Password" required>
+                                        <label for="subject" class="sr-only">Subject</label>
+                                        <input type="text" name="subject" id="subject" class="form-control" placeholder="Subject" required>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="message" class="sr-only">Your Message</label>
+                                        <textarea name="message" id="message" class="form-control" rows = "15" placeholder="Your Message" required></textarea>
                                         <div class="help-block with-errors"></div>
                                     </div>
                             
-                                    <input type="submit" name="registration_submit" id="btn-login" class="btn btn-custom btn-lg btn-block" value="Register">
+                                    <input type="submit" name="contact_submit" id="btn-login" class="btn btn-custom btn-lg btn-block" value="Send">
                                 </form>
                              
                             </div>
@@ -43,7 +48,8 @@
             else{ 
                 echo "<div class='alert alert-success'>";
                     echo "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>";
-                    echo "Your registration request has been submitted";
+                    echo "<p>Thank you for Contacting US. We got your message and will get back to you shortly. </p>";
+                    echo "<p>P.S: We have sent a confirmation email to your address.</p>";
                     echo "</div>";
                 echo "<div class='row'>";
              } ?>

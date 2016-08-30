@@ -64,3 +64,5 @@
                                 </tbody>
                             </table> 
                         </form>
+                        <?php include("delete_modal.php"); ?>
+                        <?php myPaginationComments();     // display Pagination ?>

@@ -35,3 +35,17 @@ $("body").prepend(div_box);
 $('#load-screen').delay(300).fadeOut(300,function(){
 	$(this).remove();
 });*/
+
+
+// delete confirmation
+
+$(document).ready(function(){
+    $(".delete_link").on('click', function(){
+        var delete_url = $(this).attr("rel");
+        $(".modal_delete").attr("href", delete_url);
+        $("#myModal").modal('show');
+    });
+});
+
+
+

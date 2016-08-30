@@ -14,15 +14,9 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-<!--                     <li>
-                        <a href="#">About</a>
-                    </li>
                     <li>
-                        <a href="#">Services</a>
-                    </li>
-                    <li>
-                        <a href="#">Contact</a>
-                    </li> -->
+                        <a href="contact.php">Contact</a>
+                    </li> 
 
                     <?php // navCategoryDisplay();     // Display Nav Category Alphabetically ?>
                     

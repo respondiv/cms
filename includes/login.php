@@ -12,10 +12,6 @@
          $username = mysqli_real_escape_string($connection,$username);
          $password = mysqli_real_escape_string($connection,$password);
 
-         $user_randSalt  = getSaltFromDB();
-
-         $password = crypt($password, $user_randSalt);
-
          $query = "SELECT * FROM users WHERE username = '{$username}' ";
          $select_user_query = mysqli_query($connection, $query);
 
@@ -35,24 +31,21 @@
 
          }
 
-         if ($username !== $db_username || $password !== $db_password || $db_status !== "approved" || $db_user_role !== "admin") {
+         if ($username !== $db_username || !password_verify($password, $db_password) || $db_status !== "approved" || $db_user_role !== "admin") {
              header("Location: /");
          }
-        /* elseif ($username == $db_username && $password == $db_password) {
-            header("Location: ../admin/");
-         }*/
          else{
-         	$_SESSION['user_id'] = $db_id;
-         	$_SESSION['username'] = $db_username;
+            $_SESSION['user_id'] = $db_id;
+            $_SESSION['username'] = $db_username;
             $_SESSION['user_password'] = $db_password;
-         	$_SESSION['user_firstname'] = $db_firstname;
-         	$_SESSION['user_lastname'] = $db_lastname;
-         	$_SESSION['user_email'] = $db_email;
-         	$_SESSION['user_role'] = $db_user_role;
-         	$_SESSION['db_status'] = $db_status;
-         	$_SESSION['user_image'] = $db_image;
-         	
-         	header("Location: ../admin/");
+            $_SESSION['user_firstname'] = $db_firstname;
+            $_SESSION['user_lastname'] = $db_lastname;
+            $_SESSION['user_email'] = $db_email;
+            $_SESSION['user_role'] = $db_user_role;
+            $_SESSION['db_status'] = $db_status;
+            $_SESSION['user_image'] = $db_image;
+            
+            header("Location: ../admin/");
          }
 
 

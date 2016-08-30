@@ -22,7 +22,7 @@
         </div>
         <!-- /.row -->
 
-
+        <?php myPaginationCategory();               // Display Pagination ?> 
 
         <hr>
 

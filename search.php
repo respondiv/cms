@@ -26,6 +26,8 @@
         </div>
         <!-- /.row -->
 
+        <?php myPaginationSearch();               // Display Pagination ?> 
+
         <hr>
 
 <?php include "includes/footer.php"                     /* Include footer */ ?> 

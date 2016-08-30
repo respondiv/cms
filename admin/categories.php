@@ -96,6 +96,7 @@
                                 </tbody>
                             </table>
                         </div>
+                        <?php include("includes/delete_modal.php"); ?>
                         
                         
 
