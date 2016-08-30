@@ -11,6 +11,7 @@
     // Query all the posts
     function queryAllPosts(){
         global $connection;
+
         $query = "SELECT * FROM posts WHERE post_status = 'published' ";
         $select_all_posts = mysqli_query($connection,$query);
 
@@ -91,6 +92,27 @@
         }
         else{
             $new_array = arraySort($new_array, 'post_date', SORT_DESC);
+
+            if (isset($_GET['page'])) {
+                $pagePerPost = $_GET['page'];                
+            }
+            else{
+                $pagePerPost = "";
+            }
+
+            if ($pagePerPost == 1 || $pagePerPost == "" ) {
+                         $page_1 = 0;
+            }
+            else{
+                $page_1 = ($pagePerPost * 5) - 5;
+            }   
+
+
+                $new_array = array_slice($new_array, $page_1, 5);
+
+
+
+
             foreach ($new_array as $key => $value) {
                         echo("<!-- Blog Post --> ");
                         echo "<h2>";
@@ -113,6 +135,33 @@
 
 
     }
+
+     //  display Pagination Home
+    function myPaginationHome(){
+
+        // Page count for pagination
+        $new_array = queryAllPosts();
+        $count = ceil(count($new_array) / 5);
+        
+        if (isset($_GET['page'])) {
+                $pagePerPost = $_GET['page'];                
+        }else{
+            $pagePerPost = "";
+        }
+
+        echo "<ul class='pager'> Pages ";
+            for ($i=1; $i <= $count ; $i++) { 
+                if ($i == $pagePerPost) {
+                    echo "<li><a class='active_link' href='?&page={$i}'>$i</a></li>";
+                }
+                else{
+                    echo "<li><a href='?&page={$i}'>$i</a></li>";
+                }
+            }
+
+        echo "</ul>";
+    }
+
 
 
     // query search results
@@ -714,7 +763,6 @@
         }
 
     }
-
 
 
 

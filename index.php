@@ -18,6 +18,7 @@
                 </h1>
 
                 <?php displayAllPosts();               // Display ALl Posts ?> 
+               
 
             </div>
             
@@ -26,6 +27,10 @@
 
         </div>
         <!-- /.row -->
+
+         <?php myPaginationHome();               // Display Pagination ?> 
+
+
 
         <hr>
 

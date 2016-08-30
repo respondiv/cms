@@ -11,7 +11,6 @@
 			                $user_email = $get_values['user_email']; 
 			                $user_role = $get_values['user_role'];
 			                $user_status = $get_values['user_status'];
-			                $user_randSalt = $get_values['user_randSalt'];
 
 						  	// Update the existing post with the new values using editUsersStep2() functions
 						  	editUsersStep2();
