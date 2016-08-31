@@ -1,0 +1,7 @@
+#OS junk files
+[Tt]humbs.db
+*.DS_Store
+
+#Sublime Text File
+first-cms.sublime-project
+first-cms.sublime-workspace
