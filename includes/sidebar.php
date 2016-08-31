@@ -25,8 +25,14 @@
 
                 <!-- Side Widget Well -->
                 <div class="well">
-                    <h4>Side Widget Well</h4>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore, perspiciatis adipisci accusamus laudantium odit aliquam repellat tempore quos aspernatur vero.</p>
+                    <h4>About CMS</h4>
+                    <p>This is About CMS section. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore, perspiciatis adipisci accusamus laudantium odit aliquam repellat tempore quos aspernatur vero.</p>
+                </div>
+
+                <!-- Blog Search Well -->
+                <div class="well">
+                    <h4>Login</h4>
+                    <?php displayLoginForm(); ?>
                 </div>
 
                 

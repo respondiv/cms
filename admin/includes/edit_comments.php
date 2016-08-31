@@ -22,18 +22,21 @@
 						<!-- Form to Edit comments -->
 
 						<div class="well">
-		                    <form role="form" action="" method="post">
+		                    <form role="form" action="" method="post" data-toggle="validator">
 		                        <div class="form-group">
 		                        <label for="comment_author">Name</label>
-		                            <input type="text" class="form-control" name="comment_author" value="<?php echo $comment_author ?>">
+		                            <input type="text" class="form-control" name="comment_author" value="<?php echo $comment_author ?>" required>
+		                            <div class="help-block with-errors"></div>
 		                        </div>
 		                        <div class="form-group">
 		                            <label for="comment_email">Email</label>
-		                            <input type="email" class="form-control" name="comment_email" value="<?php echo $comment_email ?>">
+		                            <input type="email" class="form-control" name="comment_email" data-error="Bruh, that email address is invalid" value="<?php echo $comment_email ?>" required>
+		                            <div class="help-block with-errors"></div>
 		                        </div>
 		                        <div class="form-group">
 		                            <label for="comment_content">Comments</label>
-		                            <textarea class="form-control" rows="3" name="comment_content"><?php echo $comment_content ?></textarea>
+		                            <textarea class="form-control" rows="3" name="comment_content" required><?php echo $comment_content ?></textarea>
+		                            <div class="help-block with-errors"></div>
 		                        </div>
 		                        <!-- <div class="form-group">
 		                        									<label for="comment_status">Comment Status</label>

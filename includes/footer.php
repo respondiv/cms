@@ -19,9 +19,8 @@
     <script src="js/bootstrap.min.js"></script>
 
     <!-- Bootstrap Form Validation: http://1000hz.github.io/bootstrap-validator-->
-    <?php if (isset($_GET['p_id'])) { ?> 
-       <script src='//cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.5/validator.min.js'></script>
-    <?php } ?>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.5/validator.min.js'></script>
+
    
   
 </body>

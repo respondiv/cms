@@ -24,7 +24,7 @@
                             <small> Here you can Edit your Posts</small>
                         </h3>
 						<!-- Form to Edit Post -->
-                        <form action="" method="post" enctype="multipart/form-data">    
+                        <form role="form" action="" method="post" enctype="multipart/form-data" data-toggle="validator">    
      
 							<div class="form-group">
 								<label for="post_status">Post Status</label>
@@ -41,13 +41,15 @@
 
 							<div class="form-group">
 								<label for="post_title">Post Title</label>
-								<input type="text" class="form-control" name="post_title" value="<?php echo $post_title; ?>">
+								<input type="text" class="form-control" name="post_title" value="<?php echo $post_title; ?>" required>
+								<div class="help-block with-errors"></div>
 							</div>
 
 							<div class="form-group">
 								<label for="post_content">Post Content</label>
-								<textarea class="form-control" name="post_content" id="" cols="30" rows="10"><?php echo $post_content; ?>
+								<textarea class="form-control" name="post_content" id="" cols="30" rows="10" required><?php echo $post_content; ?>
 								</textarea>
+								<div class="help-block with-errors"></div>
 							</div>
 
 							<div class="form-group">

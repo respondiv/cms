@@ -1,4 +1,4 @@
-						<?php addUsers();       //Add posts ?>
+						<?php //userRegistration();       //Add posts ?>
 						<h3 class="page-header">
                             Add Users:
                             <small> Here you can Add new Users</small>

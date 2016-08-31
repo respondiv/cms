@@ -555,8 +555,40 @@
 
     }
 
+    // Display Login Form
+    function displayLoginForm(){
+                    /**/echo "<form role='form' action='includes/login.php' method='post' data-toggle='validator' >";
+                    echo "<form role='form' action='' method='post' data-toggle='validator' >";
+                            echo "<div class='form-group'>";
+                                echo "<input type='text' class='form-control' name='username' required data-error='Username is Required' placeholder='Enter Username'>";
+                                echo "<div class='help-block with-errors'></div>";
+                            echo "</div>";
+                            echo "<div class='form-group'>";
+                                echo "<div class='input-group'>";
+                                    echo "<input type='password' class='form-control' name='password' required data-error='Password is Required' placeholder='Enter Password'>";
+                                    echo "<span class='input-group-btn'>";
+                                        echo "<button class='btn btn-primary' type='submit' name='login_submit'>Login";
+                                        echo "</button>";
+                                    echo "</span>";
+                                echo "</div>";
+                                echo "<div class='help-block with-errors'></div>";
+                            echo "</div>";
+                    echo "</form> ";
+    }
 
 
+    // Login Function
+    function loginUser(){
+        global $connection;
+        if (isset($_POST['login_submit'])) {
+             $username = $_POST['username'];
+             $password = $_POST['password'];
+         } 
+         
+
+
+
+    }
 
 
 
