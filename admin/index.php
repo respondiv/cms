@@ -23,8 +23,8 @@
                                         <i class="fa fa-file-text fa-5x"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
-                                  <div class='huge'>12</div>
-                                        <div>Posts</div>
+                                  <div class='huge'><?php echo countAll('posts'); ?></div>
+                                        <div>Total Posts</div>
                                     </div>
                                 </div>
                             </div>
@@ -46,8 +46,8 @@
                                         <i class="fa fa-comments fa-5x"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
-                                     <div class='huge'>23</div>
-                                      <div>Comments</div>
+                                     <div class='huge'><?php echo countAll('comments'); ?></div>
+                                      <div>Total Comments</div>
                                     </div>
                                 </div>
                             </div>
@@ -69,8 +69,8 @@
                                         <i class="fa fa-list fa-5x"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
-                                        <div class='huge'>13</div>
-                                         <div>Categories</div>
+                                        <div class='huge'><?php echo countAll('categories'); ?></div>
+                                         <div>Total Categories</div>
                                     </div>
                                 </div>
                             </div>
@@ -92,8 +92,8 @@
                                         <i class="fa fa-user fa-5x"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
-                                    <div class='huge'>23</div>
-                                        <div> Users</div>
+                                    <div class='huge'><?php echo countAll('users'); ?></div>
+                                        <div>Total Users</div>
                                     </div>
                                 </div>
                             </div>
@@ -108,7 +108,50 @@
                     </div>   
                 
                 </div>
-                <!-- /.row -->
+                <!-- /.row 1 -->
+
+                <div class="row">
+                    <!-- Google Charts -->
+                    <script type="text/javascript" src="//www.gstatic.com/charts/loader.js"></script>
+                    <script type="text/javascript">
+                      google.charts.load('current', {'packages':['bar']});
+                      google.charts.setOnLoadCallback(drawChart);
+                      function drawChart() {
+                        var data = google.visualization.arrayToDataTable([
+                          ['', 'Posts', 'Comments', 'Users'],
+
+                            <?php 
+                                $published_posts = countPostsByStatus('published');
+                                $draft_posts = countPostsByStatus('draft');
+                                $comments_approved = countApprovedComments('approved');
+                                $comments_decline = countApprovedComments('decline');
+                                $user_approved = countApprovedUsers('approved');
+                                $user_declined = countApprovedUsers('declined');
+
+                        
+                              echo "['Approved/Published', $published_posts, $comments_approved, $user_approved ],";
+                              echo "['Draft/Decline', $draft_posts, $comments_decline, $user_declined ],";
+
+                              ?>
+                        ]);
+
+                        var options = {
+                          chart: {
+                            title: 'CMS Overview Details',
+                            subtitle: '',
+                          }
+                        };
+
+                        var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
+
+                        chart.draw(data, options);
+                      }
+                    </script>
+                    <div class="col-md-12">
+                        <div id="columnchart_material" style="width: 'auto'; height: 500px;"></div>
+                    </div>
+                </div>
+                <!-- /.row 2 -->
 
             </div>
             <!-- /.container-fluid -->

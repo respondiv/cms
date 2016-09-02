@@ -1003,5 +1003,71 @@
 
 
 
+    // Count total number of posts / comments / categories / users
+    function countAll($count_from){
+        global $connection;
+        $query = "SELECT * FROM $count_from ";
+        $select_all_values = mysqli_query($connection, $query);
+        // Check if the query is good
+        querryCheck($select_all_values);
+
+        $total_count = mysqli_num_rows($select_all_values);
+        return $total_count;
+    }
+
+
+    // Count total approved / decline users or comments
+    function countApprovedComments($comment_type){
+        global $connection;
+        if ($comment_type == "approved") {
+            $query = "SELECT * FROM comments WHERE comment_status = 'approved'";
+        }
+        else{
+            $query = "SELECT * FROM comments WHERE comment_status = 'decline'";
+        }
+        
+        $select_all_values = mysqli_query($connection, $query);
+        // Check if the query is good
+        querryCheck($select_all_values);
+
+        $total_count = mysqli_num_rows($select_all_values);
+        return $total_count;
+    }
+
+
+    // Count total Approved Admin / Subscriber
+    function countApprovedUsers($user_status){
+        global $connection;
+        if ($user_status == "approved") {
+            $query = "SELECT * FROM users WHERE user_status = 'approved' ";
+        }
+        else{
+            $query = "SELECT * FROM users WHERE user_status = 'declined' ";
+        }
+        $select_all_values = mysqli_query($connection, $query);
+        // Check if the query is good
+        querryCheck($select_all_values);
+
+        $total_count = mysqli_num_rows($select_all_values);
+        return $total_count;
+
+    }
+
+     // Count total published / draft Post
+    function countPostsByStatus($post_status){
+        global $connection;
+        if ($post_status == "published") {
+            $query = "SELECT * FROM posts WHERE post_status = 'published' ";
+        }
+        else{
+            $query = "SELECT * FROM posts WHERE post_status = 'draft' ";
+        }
+        $select_all_values = mysqli_query($connection, $query);
+        // Check if the query is good
+        querryCheck($select_all_values);
+
+        $total_count = mysqli_num_rows($select_all_values);
+        return $total_count;
+    }
 
 ?>
